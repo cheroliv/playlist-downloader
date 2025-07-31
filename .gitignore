@@ -1,0 +1,31 @@
+# Ignorer l'environnement virtuel
+venv/
+
+# Ignorer les caches Python
+__pycache__/
+*.pyc
+*.pyo
+*~
+
+# Fichiers de configuration sensibles
+client_secret.json
+# Le token d'accès sera stocké dans un fichier, nous l'ignorerons aussi
+token.json
+
+# Dossiers de téléchargement
+downloads/
+
+.idea
+*.iml
+*.ipr
+*.iws
+
+# Ignorer les fichiers de log
+*.log
+# Ignorer les fichiers de configuration de l'éditeur
+*.sublime-workspace
+*.sublime-project
+# Ignorer les fichiers de configuration de l'éditeur
+.vscode/
+
+GEMINI.md

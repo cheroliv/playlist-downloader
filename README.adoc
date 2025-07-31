@@ -1,0 +1,158 @@
+= YouTube Playlist Manager CLI
+:doctype: book
+:toc: left
+:toclevels: 3
+:source-highlighter: rouge
+:icons: font
+
+Un outil CLI pour gérer les playlists YouTube avec puissance et simplicité.
+
+== 1. Vision du Projet
+
+Fournir aux utilisateurs un outil en ligne de commande puissant, fiable et intuitif pour gérer l'intégralité du cycle de vie de leurs playlists YouTube, du téléchargement local à la manipulation en ligne.
+
+== 2. Fonctionnalités
+
+L'outil permet d'effectuer les opérations suivantes directement depuis votre terminal :
+
+*   Créer une nouvelle playlist.
+*   Télécharger une playlist entière en fichiers MP3.
+*   Supprimer une playlist.
+*   Partager l'URL d'une playlist.
+*   Synchroniser un dossier local avec une playlist distante.
+
+=== 2.1. Cas d'Utilisation
+
+Le diagramme suivant illustre les interactions possibles de l'utilisateur avec le système.
+
+[plantuml, use-case-diagram, png]
+----
+@startuml
+left to right direction
+actor "Utilisateur" as user
+
+rectangle "Playlist Downloader CLI" {
+  usecase "Créer une playlist" as UC_CREATE
+  usecase "Télécharger une playlist" as UC_DOWNLOAD
+  usecase "Supprimer une playlist" as UC_DELETE
+  usecase "Partager une playlist" as UC_SHARE
+  usecase "Mettre à jour une playlist" as UC_UPDATE
+}
+
+user -- UC_CREATE
+user -- UC_DOWNLOAD
+user -- UC_DELETE
+user -- UC_SHARE
+user -- UC_UPDATE
+@enduml
+----
+
+== 3. Installation
+
+Suivez ces étapes pour configurer votre environnement de développement.
+
+=== 3.1. Prérequis
+
+*   Python 3.8+
+*   `pip` et `venv`
+*   `ffmpeg` (pour la conversion audio)
++
+[source,bash]
+----
+# Sur les systèmes Debian/Ubuntu
+sudo apt update && sudo apt install python3-pip ffmpeg
+----
+
+=== 3.2. Configuration de l'API YouTube
+
+Pour interagir avec YouTube, vous devez configurer l'accès OAuth 2.0.
+
+. **Activez l'API YouTube Data v3** sur la [Google Cloud Console](https://console.cloud.google.com/).
+. **Configurez l'écran de consentement OAuth** pour une "Application de bureau" (`Desktop app`).
+. **Créez un ID client OAuth 2.0** et téléchargez le fichier `client_secret.json`.
+. **Placez `client_secret.json` à la racine du projet.**
+
+[IMPORTANT]
+====
+Le fichier `client_secret.json` est sensible. Il est déjà inclus dans le `.gitignore` du projet pour éviter toute publication accidentelle.
+====
+
+=== 3.3. Installation du Projet
+
+. **Clonez le dépôt** (si ce n'est pas déjà fait) :
++
+[source,bash]
+----
+git clone <URL_DU_REPO>
+cd playlist-downloader
+----
++
+. **Créez et activez l'environnement virtuel** :
++
+[source,bash]
+----
+python3 -m venv venv
+source venv/bin/activate
+----
++
+. **Installez les dépendances** :
++
+[source,bash]
+----
+pip install -r requirements.txt
+----
+
+== 4. Utilisation
+
+Le point d'entrée de l'application est `cli.py`.
+
+=== 4.1. Commandes Disponibles
+
+*   `creer`: Crée une nouvelle playlist.
++
+[source,bash]
+----
+python3 cli.py creer --titre "Ma Playlist Rock" --description "Les meilleurs classiques du rock." --public
+----
++
+*   `telecharger`: Télécharge une playlist en MP3.
++
+[source,bash]
+----
+python3 cli.py telecharger "https://www.youtube.com/playlist?list=PL..." -o "musique/rock"
+----
+
+=== 4.2. Flux d'Utilisation (Authentification et Création)
+
+Le diagramme ci-dessous détaille le processus lors du premier appel à une commande nécessitant une authentification, comme `creer`.
+
+[plantuml, activity-diagram, png]
+----
+@startuml
+title Flux d'activité : Création d'une playlist
+
+start
+:L'utilisateur lance la commande `creer`;
+if (Le token d'accès `token.json` existe ?) then (oui)
+  :Charger le token;
+else (non)
+  :Ouvrir le navigateur pour l'authentification Google;
+  :L'utilisateur autorise l'application;
+  :Récupérer le code d'autorisation;
+  :Échanger le code contre un token d'accès;
+  :Sauvegarder le token dans `token.json`;
+endif
+:Utiliser le token pour appeler l'API YouTube;
+:Créer la playlist;
+:Afficher le message de succès à l'utilisateur;
+stop
+@enduml
+----
+
+== 5. Principes de Développement
+
+Ce projet adhère à des principes stricts pour garantir la qualité du code :
+
+*   **Programmation Fonctionnelle**
+*   **Gestion d'Erreurs avec des Monades (`Either`)**
+*   **Test-Driven Development (TDD)**
