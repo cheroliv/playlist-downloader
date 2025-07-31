@@ -120,3 +120,5 @@ Ce projet est open source sous licence MIT.
 == Auteurs
 
 Voir les contributeurs sur https://github.com/cheroliv/playlist-downloader
+
+// cli python typer yt-dlp youtube-data-api oauth2 open-source tdd architecture-hexagonale gestion-erreurs automation
