@@ -1,158 +1,87 @@
-= YouTube Playlist Manager CLI
-:doctype: book
-:toc: left
-:toclevels: 3
-:source-highlighter: rouge
-:icons: font
+= YouTube Playlist Manager
 
-Un outil CLI pour gérer les playlists YouTube avec puissance et simplicité.
+Un outil en ligne de commande (CLI) pour gérer vos playlists YouTube avec facilité.
 
-== 1. Vision du Projet
+== Installation
 
-Fournir aux utilisateurs un outil en ligne de commande puissant, fiable et intuitif pour gérer l'intégralité du cycle de vie de leurs playlists YouTube, du téléchargement local à la manipulation en ligne.
-
-== 2. Fonctionnalités
-
-L'outil permet d'effectuer les opérations suivantes directement depuis votre terminal :
-
-*   Créer une nouvelle playlist.
-*   Télécharger une playlist entière en fichiers MP3.
-*   Supprimer une playlist.
-*   Partager l'URL d'une playlist.
-*   Synchroniser un dossier local avec une playlist distante.
-
-=== 2.1. Cas d'Utilisation
-
-Le diagramme suivant illustre les interactions possibles de l'utilisateur avec le système.
-
-[plantuml, use-case-diagram, png]
-----
-@startuml
-left to right direction
-actor "Utilisateur" as user
-
-rectangle "Playlist Downloader CLI" {
-  usecase "Créer une playlist" as UC_CREATE
-  usecase "Télécharger une playlist" as UC_DOWNLOAD
-  usecase "Supprimer une playlist" as UC_DELETE
-  usecase "Partager une playlist" as UC_SHARE
-  usecase "Mettre à jour une playlist" as UC_UPDATE
-}
-
-user -- UC_CREATE
-user -- UC_DOWNLOAD
-user -- UC_DELETE
-user -- UC_SHARE
-user -- UC_UPDATE
-@enduml
-----
-
-== 3. Installation
-
-Suivez ces étapes pour configurer votre environnement de développement.
-
-=== 3.1. Prérequis
-
-*   Python 3.8+
-*   `pip` et `venv`
-*   `ffmpeg` (pour la conversion audio)
-+
-[source,bash]
-----
-# Sur les systèmes Debian/Ubuntu
-sudo apt update && sudo apt install python3-pip ffmpeg
-----
-
-=== 3.2. Configuration de l'API YouTube
-
-Pour interagir avec YouTube, vous devez configurer l'accès OAuth 2.0.
-
-. **Activez l'API YouTube Data v3** sur la [Google Cloud Console](https://console.cloud.google.com/).
-. **Configurez l'écran de consentement OAuth** pour une "Application de bureau" (`Desktop app`).
-. **Créez un ID client OAuth 2.0** et téléchargez le fichier `client_secret.json`.
-. **Placez `client_secret.json` à la racine du projet.**
-
-[IMPORTANT]
-====
-Le fichier `client_secret.json` est sensible. Il est déjà inclus dans le `.gitignore` du projet pour éviter toute publication accidentelle.
-====
-
-=== 3.3. Installation du Projet
-
-. **Clonez le dépôt** (si ce n'est pas déjà fait) :
+. **Prérequis**: Assurez-vous d'avoir Python 3 et `pip` installés.
+. **Clonez le dépôt**:
 +
 [source,bash]
 ----
 git clone <URL_DU_REPO>
 cd playlist-downloader
 ----
-+
-. **Créez et activez l'environnement virtuel** :
+. **Créez un environnement virtuel**:
 +
 [source,bash]
 ----
 python3 -m venv venv
 source venv/bin/activate
 ----
-+
-. **Installez les dépendances** :
+. **Installez les dépendances**:
 +
 [source,bash]
 ----
 pip install -r requirements.txt
 ----
+. **Configurez l'authentification Google**: Suivez les instructions dans `GEMINI.md` pour configurer votre fichier `client_secret.json`.
 
-== 4. Utilisation
+== Commandes disponibles
 
-Le point d'entrée de l'application est `cli.py`.
+=== `creer`
 
-=== 4.1. Commandes Disponibles
+Crée une nouvelle playlist sur votre compte YouTube.
 
-*   `creer`: Crée une nouvelle playlist.
-+
+==== Usage
+
 [source,bash]
 ----
-python3 cli.py creer --titre "Ma Playlist Rock" --description "Les meilleurs classiques du rock." --public
+python -m src.playlist_downloader.cli creer --titre "Ma Super Playlist" --description "Les meilleurs sons de 2025" --public
 ----
-+
-*   `telecharger`: Télécharge une playlist en MP3.
-+
+
+==== Options
+
+* `--titre`, `-t`: (Requis) Le titre de la playlist.
+* `--description`, `-d`: La description de la playlist.
+* `--public`: Rend la playlist publique (par défaut: privée).
+
+=== `telecharger`
+
+Télécharge tous les morceaux d'une playlist YouTube au format MP3 dans un dossier local.
+
+==== Usage
+
 [source,bash]
 ----
-python3 cli.py telecharger "https://www.youtube.com/playlist?list=PL..." -o "musique/rock"
+python -m src.playlist_downloader.cli telecharger "https://www.youtube.com/playlist?list=PLxxxxxxxxxxxxxxxxx" -o /chemin/vers/mon/dossier
 ----
 
-=== 4.2. Flux d'Utilisation (Authentification et Création)
+==== Arguments
 
-Le diagramme ci-dessous détaille le processus lors du premier appel à une commande nécessitant une authentification, comme `creer`.
+* `URL`: (Requis) L'URL complète de la playlist YouTube.
 
-[plantuml, activity-diagram, png]
+==== Options
+
+* `--output`, `-o`: Le dossier où sauvegarder les fichiers MP3. Par défaut, un dossier `downloads/` est créé à la racine du projet.
+
+=== `detruire`
+
+Supprime une playlist de votre compte YouTube.
+
+==== Usage
+
+[source,bash]
 ----
-@startuml
-title Flux d'activité : Création d'une playlist
-
-start
-:L'utilisateur lance la commande `creer`;
-if (Le token d'accès `token.json` existe ?) then (oui)
-  :Charger le token;
-else (non)
-  :Ouvrir le navigateur pour l'authentification Google;
-  :L'utilisateur autorise l'application;
-  :Récupérer le code d'autorisation;
-  :Échanger le code contre un token d'accès;
-  :Sauvegarder le token dans `token.json`;
-endif
-:Utiliser le token pour appeler l'API YouTube;
-:Créer la playlist;
-:Afficher le message de succès à l'utilisateur;
-stop
-@enduml
+python -m src.playlist_downloader.cli detruire "PLxxxxxxxxxxxxxxxxx"
 ----
 
-== 5. Principes de Développement
+==== Arguments
 
-Ce projet adhère à des principes stricts pour garantir la qualité du code :
+* `PLAYLIST_ID`: (Requis) L'ID de la playlist à supprimer.
 
-*   **Programmation Fonctionnelle**
-*   **Gestion d'Erreurs avec des Monades (`Either`)**
-*   **Test-Driven Development (TDD)**
+== Principes de Développement
+
+Ce projet suit une approche stricte de **Test-Driven Development (TDD)** et de **Log-Driven Development (LDD)**. La logique métier est construite sur des principes de **programmation fonctionnelle** avec une gestion d'erreurs robuste basée sur les **monades `Either`** de la bibliothèque `PyMonad`.
+
+Pour plus de détails sur l'architecture, les décisions de conception et la feuille de route, veuillez consulter le fichier `GEMINI.md`.

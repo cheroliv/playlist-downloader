@@ -1,5 +1,9 @@
 typer[all]
-pymonad
+pymonad>=2.4.0
 yt-dlp
 google-api-python-client
 google-auth-oauthlib
+
+# --- Dépendances de développement et de test ---
+pytest
+pytest-mock
