@@ -19,7 +19,6 @@ Un outil en ligne de commande pour gérer, synchroniser et télécharger vos pla
 * Typer (CLI)
 * yt-dlp (téléchargement)
 * API YouTube Data v3 (gestion des playlists)
-* PyMonad (gestion d’erreurs monadique)
 * google-api-python-client, google-auth-oauthlib (authentification OAuth 2.0)
 
 == Installation
@@ -72,7 +71,7 @@ python -m playlist_downloader.cli [commande] [options]
 == Principes de Développement
 
 * Programmation fonctionnelle (fonctions pures, immuabilité)
-* Gestion d’erreurs explicite via la monade `Either` (PyMonad)
+* Gestion d’erreurs explicite et centralisée
 * Développement piloté par les tests (TDD) et validation des logs (LDD)
 * Architecture hexagonale (domain, ports, adapters)
 
@@ -110,7 +109,7 @@ pytest
 
 == Contribution
 
-* Respectez le TDD/LDD et la gestion d’erreurs monadique.
+* Respectez le TDD/LDD et la gestion d’erreurs centralisée.
 * Toute nouvelle fonctionnalité doit être couverte par des tests unitaires et d’intégration.
 * Documentez toute décision architecturale majeure dans le projet.
 
