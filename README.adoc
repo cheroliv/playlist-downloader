@@ -1,87 +1,123 @@
-= YouTube Playlist Manager
+= YouTube Playlist Manager CLI
+:toc:
+:icons: font
+:source-highlighter: pygments
 
-Un outil en ligne de commande (CLI) pour gérer vos playlists YouTube avec facilité.
+Un outil en ligne de commande pour gérer, synchroniser et télécharger vos playlists YouTube, conçu pour la robustesse, la testabilité et la simplicité d’utilisation.
+
+== Fonctionnalités
+
+* Création de playlists YouTube (`creer`)
+* Téléchargement de playlists au format MP3 (`telecharger`)
+* Synchronisation locale/distante (`mettre-a-jour`)
+* Suppression de playlists (`detruire`)
+* Récupération de l’URL de partage (`partager`)
+
+== Stack Technique
+
+* Python 3
+* Typer (CLI)
+* yt-dlp (téléchargement)
+* API YouTube Data v3 (gestion des playlists)
+* PyMonad (gestion d’erreurs monadique)
+* google-api-python-client, google-auth-oauthlib (authentification OAuth 2.0)
 
 == Installation
 
-. **Prérequis**: Assurez-vous d'avoir Python 3 et `pip` installés.
-. **Clonez le dépôt**:
+. Clonez le dépôt :
 +
 [source,bash]
 ----
-git clone <URL_DU_REPO>
+git clone https://github.com/cheroliv/playlist-downloader.git
 cd playlist-downloader
 ----
-. **Créez un environnement virtuel**:
+
+. Créez et activez un environnement virtuel :
 +
 [source,bash]
 ----
 python3 -m venv venv
 source venv/bin/activate
 ----
-. **Installez les dépendances**:
+
+. Installez les dépendances :
 +
 [source,bash]
 ----
 pip install -r requirements.txt
 ----
-. **Configurez l'authentification Google**: Suivez les instructions dans `GEMINI.md` pour configurer votre fichier `client_secret.json`.
 
-== Commandes disponibles
+== Configuration OAuth 2.0
 
-=== `creer`
+. Créez un projet Google Cloud et activez l’API YouTube Data v3.
+. Configurez l’écran de consentement OAuth et créez des identifiants OAuth 2.0 pour une application de bureau.
+. Téléchargez le fichier `client_secret.json` et placez-le à la racine du projet.
+. Ajoutez `client_secret.json` à `.gitignore` pour éviter toute fuite de secrets.
 
-Crée une nouvelle playlist sur votre compte YouTube.
+== Utilisation
 
-==== Usage
-
-[source,bash]
-----
-python -m src.playlist_downloader.cli creer --titre "Ma Super Playlist" --description "Les meilleurs sons de 2025" --public
-----
-
-==== Options
-
-* `--titre`, `-t`: (Requis) Le titre de la playlist.
-* `--description`, `-d`: La description de la playlist.
-* `--public`: Rend la playlist publique (par défaut: privée).
-
-=== `telecharger`
-
-Télécharge tous les morceaux d'une playlist YouTube au format MP3 dans un dossier local.
-
-==== Usage
+Lancez l’outil via la CLI :
 
 [source,bash]
 ----
-python -m src.playlist_downloader.cli telecharger "https://www.youtube.com/playlist?list=PLxxxxxxxxxxxxxxxxx" -o /chemin/vers/mon/dossier
+python -m playlist_downloader.cli [commande] [options]
 ----
 
-==== Arguments
-
-* `URL`: (Requis) L'URL complète de la playlist YouTube.
-
-==== Options
-
-* `--output`, `-o`: Le dossier où sauvegarder les fichiers MP3. Par défaut, un dossier `downloads/` est créé à la racine du projet.
-
-=== `detruire`
-
-Supprime une playlist de votre compte YouTube.
-
-==== Usage
-
-[source,bash]
-----
-python -m src.playlist_downloader.cli detruire "PLxxxxxxxxxxxxxxxxx"
-----
-
-==== Arguments
-
-* `PLAYLIST_ID`: (Requis) L'ID de la playlist à supprimer.
+.Exemples :
+* Créer une playlist : `python -m playlist_downloader.cli creer "Titre de la playlist"`
+* Télécharger une playlist : `python -m playlist_downloader.cli telecharger <URL>`
+* Supprimer une playlist : `python -m playlist_downloader.cli detruire <ID>`
+* Partager une playlist : `python -m playlist_downloader.cli partager <ID>`
 
 == Principes de Développement
 
-Ce projet suit une approche stricte de **Test-Driven Development (TDD)** et de **Log-Driven Development (LDD)**. La logique métier est construite sur des principes de **programmation fonctionnelle** avec une gestion d'erreurs robuste basée sur les **monades `Either`** de la bibliothèque `PyMonad`.
+* Programmation fonctionnelle (fonctions pures, immuabilité)
+* Gestion d’erreurs explicite via la monade `Either` (PyMonad)
+* Développement piloté par les tests (TDD) et validation des logs (LDD)
+* Architecture hexagonale (domain, ports, adapters)
 
-Pour plus de détails sur l'architecture, les décisions de conception et la feuille de route, veuillez consulter le fichier `GEMINI.md`.
+== Structure du projet
+
+[source]
+----
+src/
+  playlist_downloader/
+    cli.py
+    auth.py
+    youtube_api.py
+    logger_config.py
+    adapters/
+      ytdlp_adapter.py
+    domain/
+      models.py
+      ports.py
+      errors.py
+    services/
+  tests/
+    test_auth.py
+    test_youtube_api.py
+    test_ytdlp_adapter.py
+----
+
+== Tests
+
+Lancez la suite de tests avec :
+
+[source,bash]
+----
+pytest
+----
+
+== Contribution
+
+* Respectez le TDD/LDD et la gestion d’erreurs monadique.
+* Toute nouvelle fonctionnalité doit être couverte par des tests unitaires et d’intégration.
+* Documentez toute décision architecturale majeure dans le projet.
+
+== Licence
+
+Ce projet est open source sous licence MIT.
+
+== Auteurs
+
+Voir les contributeurs sur https://github.com/cheroliv/playlist-downloader
