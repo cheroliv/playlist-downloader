@@ -1,0 +1,46 @@
+artistes:
+  - nom: "Bilel tachini"
+    playlist:
+      - "https://example.com/daftpunk/playlist1"
+      - "https://example.com/daftpunk/playlist2"
+  - nom: "mirou hichem tgv"
+    playlist:
+      - "https://example.com/jmj/playlist1"
+      - "https://example.com/jmj/playlist2"
+  - nom: "mamine"
+    playlist:
+      - "https://example.com/justice/playlist1"
+  - nom: "hichem smati"
+    playlist:
+      - "https://example.com/justice/playlist2"
+
+  - nom: "djalil"
+    playlist:
+      - "https://example.com/justice/playlist3"
+  - nom: "Bilal Babylo"
+    playlist:
+      - "https://example.com/justice/playlist4"
+  - nom: "kader japonais"
+    playlist:
+      - "https://example.com/justice/playlist5"
+  - nom: "cheb houssem"
+    playlist:
+      - "https://example.com/justice/playlist6"
+  - nom: "cheb adjel"
+    playlist:
+      - "https://example.com/justice/playlist7"
+  - nom: "cheb lotion"
+    playlist:
+      - "https://example.com/justice/playlist8"
+  - nom: "Bilal sghir"
+    playlist:
+      - "https://example.com/justice/playlist9"
+  - nom: "cheb souad"
+    playlist:
+      - "https://example.com/justice/playlist10"
+  - nom: "Amine la colombe"
+    playlist:
+      - "https://example.com/justice/playlist11"
+  - nom: "cheb omar"
+    playlist:
+      - "https://example.com/justice/playlist12"
