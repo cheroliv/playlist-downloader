@@ -93,6 +93,35 @@ def test_download_playlist_download_error(ytdlp_adapter, caplog):
         assert "Échec du téléchargement de la playlist 'Test Playlist' avec le code de sortie 1" in caplog.text
 
 
+def test_download_playlist_with_best_quality(ytdlp_adapter):
+    """
+    Vérifie que la qualité 'best' est correctement passée aux options de yt-dlp.
+    """
+    playlist = Playlist(playlist_id="PL12345", title="Test Playlist", url="http://fake.url")
+    destination_path = "/fake/path"
+
+    with patch('yt_dlp.YoutubeDL') as mock_ytdl:
+        mock_instance = MagicMock()
+        mock_ytdl.return_value.__enter__.return_value = mock_instance
+        mock_instance.download.return_value = 0
+
+        ytdlp_adapter.download_playlist(playlist, destination_path, quality="best")
+
+        # Vérifier que 'preferredquality' est mis à '0' pour la meilleure qualité
+        expected_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': f'{destination_path}/%(title)s.%(ext)s',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '0',  # '0' est la meilleure qualité pour yt-dlp
+            }],
+            'ignoreerrors': True,
+            'verbose': False,
+        }
+        mock_ytdl.assert_called_once_with(expected_opts)
+
+
 def test_download_playlist_exception(ytdlp_adapter, caplog):
     """
     Given a playlist URL,

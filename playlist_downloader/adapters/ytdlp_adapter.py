@@ -11,18 +11,22 @@ logger = logging.getLogger(__name__)
 
 
 class YTDLPAdapter(MusicDownloader):
-    def download_playlist(self, playlist: Playlist, destination: str) -> Either[DownloaderError, str]:
+    def download_playlist(self, playlist: Playlist, destination: str, quality: str = "192") -> Either[DownloaderError, str]:
         """
         Downloads all audio tracks from a YouTube playlist to a specified local directory.
 
         Args:
             playlist (Playlist): The playlist to download.
             destination (str): The local path to save the audio files.
+            quality (str): The desired audio quality ('best', '192', etc.).
 
         Returns:
             Either[DownloaderError, str]: Right with a success message or Left with an error message.
         """
         logger.info(f"Début du téléchargement de la playlist '{playlist.title}'...")
+
+        # '0' is the best quality for yt-dlp
+        audio_quality = '0' if quality == 'best' else quality
 
         ydl_opts = {
             'format': 'bestaudio/best',
@@ -30,7 +34,7 @@ class YTDLPAdapter(MusicDownloader):
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
-                'preferredquality': '192',
+                'preferredquality': audio_quality,
             }],
             'ignoreerrors': True,
             'verbose': False,

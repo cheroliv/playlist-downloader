@@ -57,63 +57,74 @@ pip install -r requirements.txt
 . Download the `client_secret.json` file and place it at the root of the project.
 . Add `client_secret.json` to `.gitignore` to prevent any secret leaks.
 
-== Usage
+== Available Commands
 
-Run the tool via the CLI:
+The following commands are available through the CLI.
 
+=== `creer`
+
+Creates a new YouTube playlist.
+
+*Usage*:
 [source,bash]
 ----
-python -m playlist_downloader.cli [command] [options]
+playlist-downloader creer --titre "My Awesome Playlist" --description "The best tracks of 2025." --public
 ----
 
-.Examples:
-* Create a playlist: `python -m playlist_downloader.cli creer "Playlist Title"`
-* Download a playlist: `python -m playlist_downloader.cli telecharger <URL>`
-* Delete a playlist: `python -m playlist_downloader.cli detruire <ID>`
-* Share a playlist: `python -m playlist_downloader.cli partager <ID>`
+=== `telecharger`
 
-== Advanced Usage
+Downloads all tracks from a playlist in MP3 format.
 
-=== Batch Download from a YAML file
-
-You can download multiple videos for different artists using a YAML configuration file. By default, the application looks for a `musics.yml` file.
-
-. Create a `musics.yml` file at the project root with the following structure:
-+
-[source,yaml]
-----
-artistes:
-  - name: "Artist Name 1"
-    tunes:
-      - "YOUTUBE_URL_1"
-      - "YOUTUBE_URL_2"
-  - name: "Artist Name 2"
-    tunes:
-      - "YOUTUBE_URL_3"
-----
-
-. Run the `importer` command to download all listed tracks:
-+
+*Usage*:
 [source,bash]
 ----
-python -m playlist_downloader.cli importer
-----
-+
-The MP3 files will be saved in subfolders by artist inside the `downloads/` directory.
-
-. You can specify a different YAML file or another output directory:
-+
-[source,bash]
-----
-python -m playlist_downloader.cli importer my_file.yml --output /path/to/my/music
+playlist-downloader telecharger "PLAYLIST_URL" -o "my_folder" -q "best"
 ----
 
-. To download all tracks into a single directory (without artist subfolders), use the `--flat` option:
-+
+=== `detruire`
+
+Deletes a YouTube playlist.
+
+*Usage*:
 [source,bash]
 ----
-python -m playlist_downloader.cli importer --flat
+playlist-downloader detruire "PLAYLIST_ID"
 ----
+
+=== `partager`
+
+Gets the sharing URL for a playlist.
+
+*Usage*:
+[source,bash]
+----
+playlist-downloader partager "PLAYLIST_ID"
+----
+
+=== `importer`
+
+Imports and downloads tracks from a YAML file.
+
+*Usage*:
+[source,bash]
+----
+playlist-downloader importer [OPTIONS] PATH_TO_YAML_FILE
+----
+
+*Arguments*:
+* `PATH_TO_YAML_FILE`: (Required) The path to the YAML file containing artists and tracks.
+
+*Options*:
+* `--output-dir, -o`: The destination folder for downloads. Default: `downloads`.
+* `--audio-quality, -q`: Audio quality (0 for best, 9 for worst). Default: `0`.
+* `--flat, -f`: Download all tracks into the output directory without creating artist subfolders.
+
+*Full Example*:
+[source,bash]
+----
+playlist-downloader importer musics.yml --output-dir "downloads/usb_stick" --audio-quality 0 --flat
+----
+
 
 == Development Principles
 
