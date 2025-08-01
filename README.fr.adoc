@@ -4,7 +4,7 @@
 :icons: font
 :source-highlighter: highlight.js
 
-link:README.adoc[English Version]
+link:README.en.adoc[English Version]
 
 Un outil en ligne de commande pour gérer, synchroniser et télécharger vos playlists YouTube, conçu pour la robustesse, la testabilité et la simplicité d’utilisation.
 
@@ -105,6 +105,13 @@ Les fichiers MP3 seront sauvegardés dans des sous-dossiers par artiste à l'int
 [source,bash]
 ----
 python -m playlist_downloader.cli importer mon_fichier.yml --output /chemin/vers/ma/musique
+----
+
+. Pour télécharger tous les morceaux dans un seul dossier (sans sous-dossiers par artiste), utilisez l'option `--flat` :
++
+[source,bash]
+----
+python -m playlist_downloader.cli importer --flat
 ----
 
 == Principes de Développement

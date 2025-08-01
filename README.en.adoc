@@ -108,6 +108,13 @@ The MP3 files will be saved in subfolders by artist inside the `downloads/` dire
 python -m playlist_downloader.cli importer my_file.yml --output /path/to/my/music
 ----
 
+. To download all tracks into a single directory (without artist subfolders), use the `--flat` option:
++
+[source,bash]
+----
+python -m playlist_downloader.cli importer --flat
+----
+
 == Development Principles
 
 * Functional programming (pure functions, immutability)

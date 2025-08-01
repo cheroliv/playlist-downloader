@@ -3,7 +3,7 @@ import logging
 from rich.console import Console
 import re
 import yaml
-import os
+from pathlib import Path  # Import de pathlib
 
 # Correction des imports pour la nouvelle structure
 from .auth import get_credentials
@@ -153,7 +153,8 @@ def share_playlist(
 @app.command(name="importer")
 def import_from_yaml(
     file_path: str = typer.Argument("musics.yml", help="Le chemin vers le fichier YAML à importer."),
-    output_dir: str = typer.Option("downloads", "--output", "-o", help="Le dossier de destination principal."),
+    output: Path = typer.Option("downloads", "--output", "-o", help="Le dossier de destination principal.", file_okay=False, dir_okay=True, writable=True, resolve_path=True),
+    flat: bool = typer.Option(False, "--flat", help="Télécharge tous les morceaux dans un seul dossier sans créer de sous-dossiers par artiste."),
 ):
     """
     Importe et télécharge des morceaux depuis un fichier YAML.
@@ -169,6 +170,7 @@ def import_from_yaml(
         _handle_error((DownloaderError(f"Erreur de syntaxe dans le fichier YAML : {e}"), None))
 
     downloader = YTDLPAdapter()
+    output.mkdir(parents=True, exist_ok=True)
     
     for artist in data.get('artistes', []):
         artist_name = artist.get('name')
@@ -178,17 +180,20 @@ def import_from_yaml(
             console.print(f"[yellow]Artiste '{artist_name or 'Inconnu'}' ignoré (pas de morceaux ou nom manquant).[/yellow]")
             continue
 
-        artist_dir = os.path.join(output_dir, artist_name)
-        os.makedirs(artist_dir, exist_ok=True)
-        
-        console.print(f"\n[bold cyan]Téléchargement pour l'artiste : {artist_name}[/bold cyan]")
+        if flat:
+            download_path = output
+            console.print(f"\n[bold cyan]Téléchargement pour l'artiste : {artist_name} (dans {download_path})[/bold cyan]")
+        else:
+            download_path = output / artist_name
+            download_path.mkdir(exist_ok=True)
+            console.print(f"\n[bold cyan]Téléchargement pour l'artiste : {artist_name} (dans {download_path})[/bold cyan]")
         
         for i, tune_url in enumerate(tunes):
             console.print(f"  ({i+1}/{len(tunes)}) Téléchargement de : {tune_url}")
             # Nous créons un objet Playlist factice car l'adaptateur l'exige.
             playlist = Playlist(playlist_id=f"tune_{i}", title=f"Tune {i}", url=tune_url)
             
-            result = downloader.download_playlist(playlist, artist_dir)
+            result = downloader.download_playlist(playlist, str(download_path))
             
             if result.is_right():
                 console.print(f"  [green]✓ {result.value}[/green]")

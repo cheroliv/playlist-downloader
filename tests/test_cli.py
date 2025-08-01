@@ -89,3 +89,39 @@ artistes:
     assert "Artiste 'Inconnu' ignoré" in result.stdout
     # S'assurer qu'on n'a appelé le téléchargement que pour l'artiste valide
     mock_ytdlp_adapter.download_playlist.assert_called_once()
+
+def test_import_with_flat_option(tmp_path, mock_ytdlp_adapter, mocker):
+    """
+    Vérifie que l'option --flat télécharge tout dans le dossier de sortie
+    sans créer de sous-dossiers par artiste.
+    """
+    yaml_content = """
+artistes:
+  - name: "Artiste 1"
+    tunes:
+      - "url1"
+"""
+    yaml_file = tmp_path / "musics.yml"
+    yaml_file.write_text(yaml_content)
+    
+    output_dir = tmp_path / "output"
+    output_dir.mkdir()
+
+    # On mock Path.mkdir pour ne pas créer de dossier
+    mocker.patch("pathlib.Path.mkdir")
+
+    result = runner.invoke(app, [
+        "importer", 
+        str(yaml_file), 
+        "--output", 
+        str(output_dir), 
+        "--flat"
+    ])
+
+    assert result.exit_code == 0
+    
+    # Vérifier que download_playlist a été appelé avec le chemin plat
+    mock_ytdlp_adapter.download_playlist.assert_called_once()
+    call_args, _ = mock_ytdlp_adapter.download_playlist.call_args
+    # Le premier argument est l'URL, le second est le chemin de sortie
+    assert call_args[1] == str(output_dir)
