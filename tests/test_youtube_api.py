@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from playlist_downloader.youtube_api import create_playlist, delete_playlist
+from playlist_downloader.youtube_api import create_playlist, delete_playlist, get_playlist_url
 from playlist_downloader.domain.errors import YouTubeApiError
 from googleapiclient.errors import HttpError
 from io import BytesIO
@@ -26,7 +26,7 @@ def test_create_playlist_success(mocker, caplog):
     mock_youtube_service = MagicMock()
     mock_youtube_service.playlists.return_value = mock_playlists
     
-    mocker.patch('src.playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
+    mocker.patch('playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
 
     result = create_playlist(mock_credentials, "Titre Test", "Description Test", private=True)
 
@@ -70,7 +70,7 @@ def test_create_playlist_api_error(mocker, caplog):
     mock_youtube_service = MagicMock()
     mock_youtube_service.playlists().insert().execute.side_effect = http_error
     
-    mocker.patch('src.playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
+    mocker.patch('playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
 
     result = create_playlist(mock_credentials, "Titre", "Description", private=False)
 
@@ -102,7 +102,7 @@ def test_delete_playlist_success(mocker, caplog):
     mock_youtube_service = MagicMock()
     mock_youtube_service.playlists.return_value = mock_playlists
 
-    mocker.patch('src.playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
+    mocker.patch('playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
 
     result = delete_playlist(mock_credentials, playlist_id)
 
@@ -133,7 +133,7 @@ def test_delete_playlist_not_found_error(mocker, caplog):
     mock_youtube_service = MagicMock()
     mock_youtube_service.playlists().delete().execute.side_effect = http_error
     
-    mocker.patch('src.playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
+    mocker.patch('playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
 
     result = delete_playlist(mock_credentials, playlist_id)
 
@@ -142,3 +142,68 @@ def test_delete_playlist_not_found_error(mocker, caplog):
     assert isinstance(error_value, YouTubeApiError)
     assert "Playlist not found" in error_value.message
     assert f"Échec de la suppression de la playlist '{playlist_id}'" in caplog.text
+
+# Scénario 6: Obtenir l'URL de partage avec succès
+def test_get_playlist_url_success(mocker, caplog):
+    """
+    Vérifie que la fonction retourne un Right avec l'URL de la playlist.
+    LDD: Vérifie les logs d'info.
+    """
+    mock_credentials = MagicMock()
+    mock_credentials.universe_domain = "googleapis.com"
+    playlist_id = "PL123456789"
+    expected_url = f"https://www.youtube.com/playlist?list={playlist_id}"
+
+    # Simuler la réponse de l'API (même si nous ne l'utilisons pas directement)
+    mock_list_execute = MagicMock(return_value={'items': [{'id': playlist_id}]})
+    mock_list = MagicMock()
+    mock_list.execute = mock_list_execute
+
+    mock_playlists = MagicMock()
+    mock_playlists.list.return_value = mock_list
+
+    mock_youtube_service = MagicMock()
+    mock_youtube_service.playlists.return_value = mock_playlists
+
+    mocker.patch('playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
+    
+    # Importer la fonction ici pour éviter les problèmes de circular dependency
+    from playlist_downloader.youtube_api import get_playlist_url
+
+    result = get_playlist_url(mock_credentials, playlist_id)
+
+    assert result.is_right()
+    assert result.value == expected_url
+    assert f"URL de la playlist '{playlist_id}' récupérée avec succès." in caplog.text
+    mock_playlists.list.assert_called_once_with(part='id', id=playlist_id)
+
+# Scénario 7: Échec de l'obtention de l'URL (playlist non trouvée)
+def test_get_playlist_url_not_found(mocker, caplog):
+    """
+    Vérifie que la fonction retourne un Left si la playlist n'existe pas.
+    LDD: Vérifie les logs d'erreur.
+    """
+    mock_credentials = MagicMock()
+    mock_credentials.universe_domain = "googleapis.com"
+    playlist_id = "PL_NON_EXISTENT"
+
+    # Simuler une réponse vide de l'API
+    mock_list_execute = MagicMock(return_value={'items': []})
+    mock_list = MagicMock()
+    mock_list.execute = mock_list_execute
+
+    mock_playlists = MagicMock()
+    mock_playlists.list.return_value = mock_list
+
+    mock_youtube_service = MagicMock()
+    mock_youtube_service.playlists.return_value = mock_playlists
+
+    mocker.patch('playlist_downloader.youtube_api.build', return_value=mock_youtube_service)
+
+    result = get_playlist_url(mock_credentials, playlist_id)
+
+    assert result.is_left()
+    error_value, _ = result.monoid
+    assert isinstance(error_value, YouTubeApiError)
+    assert "introuvable" in error_value.message
+    assert f"Échec de la récupération de l'URL" in caplog.text

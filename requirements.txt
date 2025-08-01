@@ -3,6 +3,7 @@ pymonad>=2.4.0
 yt-dlp
 google-api-python-client
 google-auth-oauthlib
+PyYAML
 
 # --- Dépendances de développement et de test ---
 pytest

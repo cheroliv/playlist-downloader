@@ -79,23 +79,22 @@ python -m playlist_downloader.cli [commande] [options]
 
 [source]
 ----
-src/
-  playlist_downloader/
-    cli.py
-    auth.py
-    youtube_api.py
-    logger_config.py
-    adapters/
-      ytdlp_adapter.py
-    domain/
-      models.py
-      ports.py
-      errors.py
-    services/
-  tests/
-    test_auth.py
-    test_youtube_api.py
-    test_ytdlp_adapter.py
+playlist_downloader/
+  cli.py
+  auth.py
+  youtube_api.py
+  logger_config.py
+  adapters/
+    ytdlp_adapter.py
+  domain/
+    models.py
+    ports.py
+    errors.py
+  services/
+tests/
+  test_auth.py
+  test_youtube_api.py
+  test_ytdlp_adapter.py
 ----
 
 == Tests

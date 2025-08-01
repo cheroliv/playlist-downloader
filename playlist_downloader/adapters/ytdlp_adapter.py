@@ -3,9 +3,9 @@ import logging
 import yt_dlp
 from pymonad.either import Left, Right, Either
 
-from src.playlist_downloader.domain.models import Playlist
-from src.playlist_downloader.domain.ports import MusicDownloader
-from src.playlist_downloader.domain.errors import DownloaderError
+from playlist_downloader.domain.models import Playlist
+from playlist_downloader.domain.ports import MusicDownloader
+from playlist_downloader.domain.errors import DownloaderError
 
 logger = logging.getLogger(__name__)
 

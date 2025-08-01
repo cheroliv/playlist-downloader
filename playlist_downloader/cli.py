@@ -5,7 +5,11 @@ import re
 
 # Correction des imports pour la nouvelle structure
 from .auth import get_credentials
-from .youtube_api import create_playlist as api_create_playlist, delete_playlist as api_delete_playlist
+from .youtube_api import (
+    create_playlist as api_create_playlist, 
+    delete_playlist as api_delete_playlist,
+    get_playlist_url as api_get_playlist_url
+)
 from . import logger_config # Important pour initialiser le logger
 
 # Import des nouveaux éléments d'architecture
@@ -111,6 +115,35 @@ def delete_playlist_command(
         )
     ).map(
         lambda success_msg: console.print(f"[bold green]✓ {success_msg}[/bold green]")
+    ).catch(
+        _handle_error
+    )
+
+@app.command(name="partager")
+def share_playlist(
+    playlist_id: str = typer.Argument(..., help="L'ID de la playlist à partager."),
+):
+    """
+    Récupère l'URL de partage d'une playlist YouTube.
+    """
+    logger.info(f"Commande 'partager' initiée pour la playlist ID : {playlist_id}")
+    
+    console.print("🔐 Tentative d'authentification auprès de Google...")
+    get_credentials().map(
+        lambda creds: (
+            console.print("[bold green]✓ Authentification réussie ![/bold green]"),
+            creds
+        )
+    ).bind(
+        lambda creds: (
+            console.print(f"🔗 Récupération de l'URL pour la playlist '{playlist_id}'..."),
+            api_get_playlist_url(creds, playlist_id)
+        )
+    ).map(
+        lambda url: (
+            console.print(f"[bold green]✓ URL récupérée avec succès ![/bold green]"),
+            console.print(f"  🔗 {url}")
+        )
     ).catch(
         _handle_error
     )

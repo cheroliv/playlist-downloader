@@ -84,3 +84,42 @@ def delete_playlist(credentials, playlist_id: str):
     except Exception as e:
         logger.error(f"Une erreur inattendue est survenue lors de la suppression: {e}")
         return Left(YouTubeApiError(f"Une erreur inattendue est survenue: {e}"))
+
+def get_playlist_url(credentials, playlist_id: str):
+    """
+    Construit et retourne l'URL de partage d'une playlist YouTube.
+
+    Args:
+        credentials: L'objet credentials obtenu via le flux OAuth.
+        playlist_id: L'ID de la playlist.
+
+    Returns:
+        Either: Un Right(playlist_url) en cas de succès, ou un Left(YouTubeApiError).
+    """
+    try:
+        logger.info(f"Construction du service YouTube pour récupérer l'URL.")
+        youtube = build('youtube', 'v3', credentials=credentials)
+
+        logger.info(f"Vérification de l'existence de la playlist '{playlist_id}'.")
+        request = youtube.playlists().list(
+            part="id",
+            id=playlist_id
+        )
+        response = request.execute()
+
+        if not response.get('items'):
+            error_message = f"La playlist '{playlist_id}' est introuvable."
+            logger.error(f"Échec de la récupération de l'URL : {error_message}")
+            return Left(YouTubeApiError(error_message))
+
+        playlist_url = f"https://www.youtube.com/playlist?list={playlist_id}"
+        logger.info(f"URL de la playlist '{playlist_id}' récupérée avec succès.")
+        return Right(playlist_url)
+
+    except HttpError as e:
+        error_message = f"Erreur API lors de la récupération de l'URL: {e.content.decode('utf-8')}"
+        logger.error(f"Échec de la récupération de l'URL pour la playlist '{playlist_id}': {error_message}")
+        return Left(YouTubeApiError(error_message))
+    except Exception as e:
+        logger.error(f"Une erreur inattendue est survenue: {e}")
+        return Left(YouTubeApiError(f"Une erreur inattendue est survenue: {e}"))
