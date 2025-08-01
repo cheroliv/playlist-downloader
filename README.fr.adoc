@@ -1,0 +1,162 @@
+
+= YouTube Playlist Manager CLI
+:toc:
+:icons: font
+:source-highlighter: highlight.js
+
+link:README.adoc[English Version]
+
+Un outil en ligne de commande pour gérer, synchroniser et télécharger vos playlists YouTube, conçu pour la robustesse, la testabilité et la simplicité d’utilisation.
+
+== Fonctionnalités
+
+* Création de playlists YouTube (`creer`)
+* Téléchargement de playlists au format MP3 (`telecharger`)
+* Synchronisation locale/distante (`mettre-a-jour`)
+* Suppression de playlists (`detruire`)
+* Récupération de l’URL de partage (`partager`)
+
+== Stack Technique
+
+* Python 3
+* Typer (CLI)
+* yt-dlp (téléchargement)
+* API YouTube Data v3 (gestion des playlists)
+* google-api-python-client, google-auth-oauthlib (authentification OAuth 2.0)
+
+== Installation
+
+. Clonez le dépôt :
++
+[source,bash]
+----
+git clone https://github.com/cheroliv/playlist-downloader.git
+cd playlist-downloader
+----
+
+. Créez et activez un environnement virtuel :
++
+[source,bash]
+----
+python3 -m venv venv
+source venv/bin/activate
+----
+
+. Installez les dépendances :
++
+[source,bash]
+----
+pip install -r requirements.txt
+----
+
+== Configuration OAuth 2.0
+
+. Créez un projet Google Cloud et activez l’API YouTube Data v3.
+. Configurez l’écran de consentement OAuth et créez des identifiants OAuth 2.0 pour une application de bureau.
+. Téléchargez le fichier `client_secret.json` et placez-le à la racine du projet.
+. Ajoutez `client_secret.json` à `.gitignore` pour éviter toute fuite de secrets.
+
+== Utilisation
+
+Lancez l’outil via la CLI :
+
+[source,bash]
+----
+python -m playlist_downloader.cli [commande] [options]
+----
+
+.Exemples :
+* Créer une playlist : `python -m playlist_downloader.cli creer "Titre de la playlist"`
+* Télécharger une playlist : `python -m playlist_downloader.cli telecharger <URL>`
+* Supprimer une playlist : `python -m playlist_downloader.cli detruire <ID>`
+* Partager une playlist : `python -m playlist_downloader.cli partager <ID>`
+
+== Utilisation Avancée
+
+=== Téléchargement par lot depuis un fichier YAML
+
+Vous pouvez télécharger plusieurs vidéos pour différents artistes en utilisant un fichier de configuration YAML. Par défaut, l'application recherche un fichier `musics.yml`.
+
+. Créez un fichier `musics.yml` à la racine du projet avec la structure suivante :
++
+[source,yaml]
+----
+artistes:
+  - name: "Nom de l'Artiste 1"
+    tunes:
+      - "URL_YOUTUBE_1"
+      - "URL_YOUTUBE_2"
+  - name: "Nom de l'Artiste 2"
+    tunes:
+      - "URL_YOUTUBE_3"
+----
+
+. Lancez la commande `importer` pour télécharger tous les morceaux listés :
++
+[source,bash]
+----
+python -m playlist_downloader.cli importer
+----
++
+Les fichiers MP3 seront sauvegardés dans des sous-dossiers par artiste à l'intérieur du dossier `downloads/`.
+
+. Vous pouvez spécifier un autre fichier YAML ou un autre dossier de sortie :
++
+[source,bash]
+----
+python -m playlist_downloader.cli importer mon_fichier.yml --output /chemin/vers/ma/musique
+----
+
+== Principes de Développement
+
+* Programmation fonctionnelle (fonctions pures, immuabilité)
+* Gestion d’erreurs explicite et centralisée
+* Développement piloté par les tests (TDD) et validation des logs (LDD)
+* Architecture hexagonale (domain, ports, adapters)
+
+== Structure du projet
+
+[source]
+----
+playlist_downloader/
+  cli.py
+  auth.py
+  youtube_api.py
+  logger_config.py
+  adapters/
+    ytdlp_adapter.py
+  domain/
+    models.py
+    ports.py
+    errors.py
+  services/
+tests/
+  test_auth.py
+  test_youtube_api.py
+  test_ytdlp_adapter.py
+----
+
+== Tests
+
+Lancez la suite de tests avec :
+
+[source,bash]
+----
+pytest
+----
+
+== Contribution
+
+* Respectez le TDD/LDD et la gestion d’erreurs centralisée.
+* Toute nouvelle fonctionnalité doit être couverte par des tests unitaires et d’intégration.
+* Documentez toute décision architecturale majeure dans le projet.
+
+== Licence
+
+Ce projet est open source sous licence MIT.
+
+== Auteurs
+
+Voir les contributeurs sur https://github.com/cheroliv/playlist-downloader
+
+// cli python typer yt-dlp youtube-data-api oauth2 open-source tdd architecture-hexagonale gestion-erreurs automation

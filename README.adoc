@@ -1,29 +1,33 @@
+
 = YouTube Playlist Manager CLI
 :toc:
 :icons: font
 :source-highlighter: highlight.js
 
-Un outil en ligne de commande pour gérer, synchroniser et télécharger vos playlists YouTube, conçu pour la robustesse, la testabilité et la simplicité d’utilisation.
+link:README.fr.adoc[Version Française]
 
-== Fonctionnalités
 
-* Création de playlists YouTube (`creer`)
-* Téléchargement de playlists au format MP3 (`telecharger`)
-* Synchronisation locale/distante (`mettre-a-jour`)
-* Suppression de playlists (`detruire`)
-* Récupération de l’URL de partage (`partager`)
+A command-line tool to manage, sync, and download your YouTube playlists, designed for robustness, testability, and ease of use.
 
-== Stack Technique
+== Features
+
+* Create YouTube playlists (`creer`)
+* Download playlists in MP3 format (`telecharger`)
+* Local/remote synchronization (`mettre-a-jour`)
+* Delete playlists (`detruire`)
+* Get the sharing URL (`partager`)
+
+== Tech Stack
 
 * Python 3
 * Typer (CLI)
-* yt-dlp (téléchargement)
-* API YouTube Data v3 (gestion des playlists)
-* google-api-python-client, google-auth-oauthlib (authentification OAuth 2.0)
+* yt-dlp (downloading)
+* YouTube Data v3 API (playlist management)
+* google-api-python-client, google-auth-oauthlib (OAuth 2.0 authentication)
 
 == Installation
 
-. Clonez le dépôt :
+. Clone the repository:
 +
 [source,bash]
 ----
@@ -31,7 +35,7 @@ git clone https://github.com/cheroliv/playlist-downloader.git
 cd playlist-downloader
 ----
 
-. Créez et activez un environnement virtuel :
+. Create and activate a virtual environment:
 +
 [source,bash]
 ----
@@ -39,79 +43,79 @@ python3 -m venv venv
 source venv/bin/activate
 ----
 
-. Installez les dépendances :
+. Install the dependencies:
 +
 [source,bash]
 ----
 pip install -r requirements.txt
 ----
 
-== Configuration OAuth 2.0
+== OAuth 2.0 Configuration
 
-. Créez un projet Google Cloud et activez l’API YouTube Data v3.
-. Configurez l’écran de consentement OAuth et créez des identifiants OAuth 2.0 pour une application de bureau.
-. Téléchargez le fichier `client_secret.json` et placez-le à la racine du projet.
-. Ajoutez `client_secret.json` à `.gitignore` pour éviter toute fuite de secrets.
+. Create a Google Cloud project and enable the YouTube Data v3 API.
+. Configure the OAuth consent screen and create OAuth 2.0 credentials for a desktop application.
+. Download the `client_secret.json` file and place it at the root of the project.
+. Add `client_secret.json` to `.gitignore` to prevent any secret leaks.
 
-== Utilisation
+== Usage
 
-Lancez l’outil via la CLI :
+Run the tool via the CLI:
 
 [source,bash]
 ----
-python -m playlist_downloader.cli [commande] [options]
+python -m playlist_downloader.cli [command] [options]
 ----
 
-.Exemples :
-* Créer une playlist : `python -m playlist_downloader.cli creer "Titre de la playlist"`
-* Télécharger une playlist : `python -m playlist_downloader.cli telecharger <URL>`
-* Supprimer une playlist : `python -m playlist_downloader.cli detruire <ID>`
-* Partager une playlist : `python -m playlist_downloader.cli partager <ID>`
+.Examples:
+* Create a playlist: `python -m playlist_downloader.cli creer "Playlist Title"`
+* Download a playlist: `python -m playlist_downloader.cli telecharger <URL>`
+* Delete a playlist: `python -m playlist_downloader.cli detruire <ID>`
+* Share a playlist: `python -m playlist_downloader.cli partager <ID>`
 
-== Utilisation Avancée
+== Advanced Usage
 
-=== Téléchargement par lot depuis un fichier YAML
+=== Batch Download from a YAML file
 
-Vous pouvez télécharger plusieurs vidéos pour différents artistes en utilisant un fichier de configuration YAML. Par défaut, l'application recherche un fichier `musics.yml`.
+You can download multiple videos for different artists using a YAML configuration file. By default, the application looks for a `musics.yml` file.
 
-. Créez un fichier `musics.yml` à la racine du projet avec la structure suivante :
+. Create a `musics.yml` file at the project root with the following structure:
 +
 [source,yaml]
 ----
 artistes:
-  - name: "Nom de l'Artiste 1"
+  - name: "Artist Name 1"
     tunes:
-      - "URL_YOUTUBE_1"
-      - "URL_YOUTUBE_2"
-  - name: "Nom de l'Artiste 2"
+      - "YOUTUBE_URL_1"
+      - "YOUTUBE_URL_2"
+  - name: "Artist Name 2"
     tunes:
-      - "URL_YOUTUBE_3"
+      - "YOUTUBE_URL_3"
 ----
 
-. Lancez la commande `importer` pour télécharger tous les morceaux listés :
+. Run the `importer` command to download all listed tracks:
 +
 [source,bash]
 ----
 python -m playlist_downloader.cli importer
 ----
 +
-Les fichiers MP3 seront sauvegardés dans des sous-dossiers par artiste à l'intérieur du dossier `downloads/`.
+The MP3 files will be saved in subfolders by artist inside the `downloads/` directory.
 
-. Vous pouvez spécifier un autre fichier YAML ou un autre dossier de sortie :
+. You can specify a different YAML file or another output directory:
 +
 [source,bash]
 ----
-python -m playlist_downloader.cli importer mon_fichier.yml --output /chemin/vers/ma/musique
+python -m playlist_downloader.cli importer my_file.yml --output /path/to/my/music
 ----
 
-== Principes de Développement
+== Development Principles
 
-* Programmation fonctionnelle (fonctions pures, immuabilité)
-* Gestion d’erreurs explicite et centralisée
-* Développement piloté par les tests (TDD) et validation des logs (LDD)
-* Architecture hexagonale (domain, ports, adapters)
+* Functional programming (pure functions, immutability)
+* Explicit and centralized error handling
+* Test-Driven Development (TDD) and Log-Driven Development (LDD)
+* Hexagonal architecture (domain, ports, adapters)
 
-== Structure du projet
+== Project Structure
 
 [source]
 ----
@@ -135,7 +139,7 @@ tests/
 
 == Tests
 
-Lancez la suite de tests avec :
+Run the test suite with:
 
 [source,bash]
 ----
@@ -144,16 +148,16 @@ pytest
 
 == Contribution
 
-* Respectez le TDD/LDD et la gestion d’erreurs centralisée.
-* Toute nouvelle fonctionnalité doit être couverte par des tests unitaires et d’intégration.
-* Documentez toute décision architecturale majeure dans le projet.
+* Respect TDD/LDD and centralized error handling.
+* Any new feature must be covered by unit and integration tests.
+* Document any major architectural decisions in the project.
 
-== Licence
+== License
 
-Ce projet est open source sous licence MIT.
+This project is open source under the MIT license.
 
-== Auteurs
+== Authors
 
-Voir les contributeurs sur https://github.com/cheroliv/playlist-downloader
+See contributors on https://github.com/cheroliv/playlist-downloader
 
-// cli python typer yt-dlp youtube-data-api oauth2 open-source tdd architecture-hexagonale gestion-erreurs automation
+// cli python typer yt-dlp youtube-data-api oauth2 open-source tdd hexagonal-architecture error-handling automation
