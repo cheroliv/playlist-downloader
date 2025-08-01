@@ -68,6 +68,42 @@ python -m playlist_downloader.cli [commande] [options]
 * Supprimer une playlist : `python -m playlist_downloader.cli detruire <ID>`
 * Partager une playlist : `python -m playlist_downloader.cli partager <ID>`
 
+== Utilisation Avancée
+
+=== Téléchargement par lot depuis un fichier YAML
+
+Vous pouvez télécharger plusieurs vidéos pour différents artistes en utilisant un fichier de configuration YAML. Par défaut, l'application recherche un fichier `musics.yml`.
+
+. Créez un fichier `musics.yml` à la racine du projet avec la structure suivante :
++
+[source,yaml]
+----
+artistes:
+  - name: "Nom de l'Artiste 1"
+    tunes:
+      - "URL_YOUTUBE_1"
+      - "URL_YOUTUBE_2"
+  - name: "Nom de l'Artiste 2"
+    tunes:
+      - "URL_YOUTUBE_3"
+----
+
+. Lancez la commande `importer` pour télécharger tous les morceaux listés :
++
+[source,bash]
+----
+python -m playlist_downloader.cli importer
+----
++
+Les fichiers MP3 seront sauvegardés dans des sous-dossiers par artiste à l'intérieur du dossier `downloads/`.
+
+. Vous pouvez spécifier un autre fichier YAML ou un autre dossier de sortie :
++
+[source,bash]
+----
+python -m playlist_downloader.cli importer mon_fichier.yml --output /chemin/vers/ma/musique
+----
+
 == Principes de Développement
 
 * Programmation fonctionnelle (fonctions pures, immuabilité)

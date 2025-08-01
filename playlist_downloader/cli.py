@@ -2,6 +2,8 @@ import typer
 import logging
 from rich.console import Console
 import re
+import yaml
+import os
 
 # Correction des imports pour la nouvelle structure
 from .auth import get_credentials
@@ -15,7 +17,7 @@ from . import logger_config # Important pour initialiser le logger
 # Import des nouveaux éléments d'architecture
 from .domain.models import Playlist
 from .adapters.ytdlp_adapter import YTDLPAdapter
-from .domain.errors import AppError
+from .domain.errors import AppError, DownloaderError
 
 # Initialisation
 app = typer.Typer(
@@ -147,6 +149,53 @@ def share_playlist(
     ).catch(
         _handle_error
     )
+
+@app.command(name="importer")
+def import_from_yaml(
+    file_path: str = typer.Argument("musics.yml", help="Le chemin vers le fichier YAML à importer."),
+    output_dir: str = typer.Option("downloads", "--output", "-o", help="Le dossier de destination principal."),
+):
+    """
+    Importe et télécharge des morceaux depuis un fichier YAML.
+    """
+    logger.info(f"Commande 'importer' initiée pour le fichier : {file_path}")
+    
+    try:
+        with open(file_path, 'r') as f:
+            data = yaml.safe_load(f)
+    except FileNotFoundError:
+        _handle_error((DownloaderError(f"Le fichier '{file_path}' est introuvable."), None))
+    except yaml.YAMLError as e:
+        _handle_error((DownloaderError(f"Erreur de syntaxe dans le fichier YAML : {e}"), None))
+
+    downloader = YTDLPAdapter()
+    
+    for artist in data.get('artistes', []):
+        artist_name = artist.get('name')
+        tunes = artist.get('tunes')
+
+        if not artist_name or not tunes:
+            console.print(f"[yellow]Artiste '{artist_name or 'Inconnu'}' ignoré (pas de morceaux ou nom manquant).[/yellow]")
+            continue
+
+        artist_dir = os.path.join(output_dir, artist_name)
+        os.makedirs(artist_dir, exist_ok=True)
+        
+        console.print(f"\n[bold cyan]Téléchargement pour l'artiste : {artist_name}[/bold cyan]")
+        
+        for i, tune_url in enumerate(tunes):
+            console.print(f"  ({i+1}/{len(tunes)}) Téléchargement de : {tune_url}")
+            # Nous créons un objet Playlist factice car l'adaptateur l'exige.
+            playlist = Playlist(playlist_id=f"tune_{i}", title=f"Tune {i}", url=tune_url)
+            
+            result = downloader.download_playlist(playlist, artist_dir)
+            
+            if result.is_right():
+                console.print(f"  [green]✓ {result.value}[/green]")
+            else:
+                # La valeur d'erreur est dans result.monoid[0]
+                error_obj, _ = result.monoid
+                console.print(f"  [bold red]✗ Erreur : {error_obj.message}[/bold red]")
 
 
 if __name__ == "__main__":
