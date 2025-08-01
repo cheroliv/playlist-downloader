@@ -105,7 +105,38 @@ playlist-downloader partager "PLAYLIST_ID"
 
 === `importer`
 
-Imports and downloads tracks from a YAML file.
+Imports and downloads tracks and/or playlists.
+
+NOTE: The command checks if an MP3 file already exists in the destination folder before downloading to save bandwidth.
+
+This command can be used in two ways:
+
+1. By providing URLs directly via the `--tune` and `--playlist` options.
+2. By using a YAML configuration file for bulk downloads.
+
+==== Usage 1: Via CLI Options
+
+For quick, direct downloads.
+
+*Options*:
+* `--tune, -t URL`: URL of a track to download. Can be used multiple times.
+* `--playlist, -p URL`: URL of a playlist to download. Can be used multiple times.
+* `--output-dir, -o PATH`: Destination folder.
+* `--audio-quality, -q QUALITY`: Audio quality (0=best, 9=worst).
+
+*Examples*:
+[source,bash]
+----
+# Download a single track
+playlist-downloader importer --tune "TRACK_URL"
+
+# Download multiple playlists to a specific folder
+playlist-downloader importer --playlist "PLAYLIST_URL_1" --playlist "PLAYLIST_URL_2" -o "my_music"
+----
+
+==== Usage 2: Via YAML File
+
+To organize and download larger collections.
 
 *Usage*:
 [source,bash]
@@ -113,18 +144,25 @@ Imports and downloads tracks from a YAML file.
 playlist-downloader importer [OPTIONS] PATH_TO_YAML_FILE
 ----
 
-*Arguments*:
-* `PATH_TO_YAML_FILE`: (Required) The path to the YAML file containing artists and tracks.
+The YAML file allows you to structure downloads by artist.
 
-*Options*:
-* `--output-dir, -o`: The destination folder for downloads. Default: `downloads`.
-* `--audio-quality, -q`: Audio quality (0 for best, 9 for worst). Default: `0`.
-* `--flat, -f`: Download all tracks into the output directory without creating artist subfolders.
+*Example `music.yml`*:
+[source,yaml]
+----
+artists:
+  - name: "Daft Punk"
+    playlists:
+      - "https://www.youtube.com/playlist?list=PL_m2_h1nL2GVEOfE8J_4IEX2aFv1I4-pS"
+  - name: "AC/DC"
+    tunes:
+      - "https://www.youtube.com/watch?v=v2AC41dglnM" # Thunderstruck
+----
 
-*Full Example*:
+*Command*:
 [source,bash]
 ----
-playlist-downloader importer musics.yml --output-dir "downloads/usb_stick" --audio-quality 0 --flat
+# The --flat option puts all files in the output directory, without artist subfolders.
+playlist-downloader importer music.yml --output-dir "my_collection" --flat
 ----
 
 

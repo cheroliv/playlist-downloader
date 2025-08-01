@@ -1,7 +1,4 @@
 artistes:
-  #  - name: "Foo"
-  #    playlist:
-  #    tunes:
 
   - name: "Bilel Tachini"
     tunes:
@@ -35,6 +32,7 @@ artistes:
       - "https://www.youtube.com/watch?v=ymzaj1IuGnM"
       - "https://www.youtube.com/watch?v=J-6VB2-9H6k"
       - "https://www.youtube.com/watch?v=pYhypDoF_3k"
+      - "https://www.youtube.com/watch?v=fWVM_Ynwy4o"
 
   - name: "Cheikha Rimitti"
     tunes:
@@ -65,6 +63,8 @@ artistes:
 
 
   - name: "Djamel Sghir"
+    playlist:
+      - "https://www.youtube.com/watch?v=CGmfSTOUfEI&list=RDEMxX9pbjfYXfZdVpeN4Ck6sQ&start_radio=1"
     tunes:
       - "https://www.youtube.com/watch?v=SXSvwSGfbNE"
 
@@ -93,8 +93,11 @@ artistes:
   - name: "Chebba Maria"
     tunes:
       - "https://www.youtube.com/watch?v=E-pMg6100g0"
+      - "https://www.youtube.com/watch?v=Zef4HsGb474"
 
   - name: "Cheb Bilal"
+    tunes:
+      - "https://youtu.be/6niDAI8C6ZY?si=gqSV6l7b3QftmbL4"
 
   - name: "Mirou Hichem TGV"
     tunes:
@@ -105,6 +108,10 @@ artistes:
       - "https://www.youtube.com/watch?v=uLojrsxoVbk"
       - "https://www.youtube.com/watch?v=fqh-tEoorqo"
 
+  - name: "Othmane Boulboul"
+    tunes:
+      - "https://www.youtube.com/watch?v=T5iVqIhnleQ"
+
   - name: "Cheb Fatah Sghir"
     tunes:
       - "https://www.youtube.com/watch?v=XpjzxTzsSew"
@@ -113,12 +120,53 @@ artistes:
     tunes:
       - "https://www.youtube.com/watch?v=AkZKeOnUuTI"
 
+  - name: "Hind Ziadi"
+    tunes:
+        - "https://www.youtube.com/watch?v=L9_TPWqU8Jc"
+
+  - name: "Jaylann"
+    tunes:
+      - "https://www.youtube.com/watch?v=gXAnRuVlAvk"
+
+  - name: "Saad Lamjarred"
+    tunes:
+      - "https://www.youtube.com/watch?v=a7Vgun2HJso"
+
+  - name: "Salim Cravata"
+    tunes:
+      - "https://www.youtube.com/watch?v=IhS20z1VTG8"
+
+  - name: "Nouaman Belaiachi"
+    tunes:
+      - "https://www.youtube.com/watch?v=KrluG8BTGBE"
 
   - name: "Cheb Lotfi"
     tunes:
       - "https://www.youtube.com/watch?v=Q2kDfmCNCE4"
       - "https://www.youtube.com/watch?v=TLsxaH7se3w"
       - "https://www.youtube.com/watch?v=znK94Ozuye8"
+
+  - name: "Bilal Sghir"
+    tunes:
+      - "https://www.youtube.com/watch?v=iuid_jkoowY"
+
+  - name: "Zina Daoudia"
+    tunes:
+      - "https://www.youtube.com/watch?v=yA2LAqFAqV4"
+
+  - name: "Cheba Souad"
+    tunes:
+      - "https://www.youtube.com/watch?v=YXlU0mPzpE8"
+
+  - name: "Amine La Colombe"
+    tunes:
+      - "https://www.youtube.com/watch?v=FzzEaLVEr-k"
+
+  - name: "Cheb Mohamed El Sghir"
+    tunes:
+      - "https://www.youtube.com/watch?v=8kTqRl50nLM"
+
+  - name: "Cheb Omar"
 
   - name: "Mamine"
 
@@ -133,24 +181,3 @@ artistes:
   - name: "Cheb Adjel"
 
   - name: "Cheb Lotion"
-
-  - name: "Bilal Sghir"
-    tunes:
-      - "https://www.youtube.com/watch?v=iuid_jkoowY"
-
-
-
-  - name: "Cheba Souad"
-    tunes:
-      - "https://www.youtube.com/watch?v=YXlU0mPzpE8"
-
-  - name: "Amine La Colombe"
-    tunes:
-      - "https://www.youtube.com/watch?v=FzzEaLVEr-k"
-
-
-  - name: "Cheb Mohamed El Sghir"
-    tunes:
-      - "https://www.youtube.com/watch?v=8kTqRl50nLM"
-
-  - name: "Cheb Omar"

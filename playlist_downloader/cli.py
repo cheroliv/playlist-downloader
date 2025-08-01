@@ -19,6 +19,7 @@ from . import logger_config # Important pour initialiser le logger
 from .domain.models import Playlist
 from .adapters.ytdlp_adapter import YTDLPAdapter
 from .domain.errors import AppError, DownloaderError
+from pymonad.either import Right, Left
 
 # Initialisation
 app = typer.Typer(
@@ -152,17 +153,23 @@ def share_playlist(
         _handle_error
     )
 
-@app.command(name="importer", help="Importe et télécharge des morceaux depuis un fichier YAML.")
+@app.command(name="importer", help="Importe et télécharge des morceaux depuis un fichier YAML ou des URLs directes.")
 def import_tunes(
     ctx: typer.Context,
     file_path: Path = typer.Argument(
-        ...,
+        None,  # Rend l'argument optionnel
         exists=True,
         file_okay=True,
         dir_okay=False,
         readable=True,
         resolve_path=True,
         help="Chemin vers le fichier YAML contenant les artistes et les morceaux.",
+    ),
+    tunes: list[str] = typer.Option(
+        None, "--tune", "-t", help="URL d'un morceau à télécharger. Peut être utilisé plusieurs fois."
+    ),
+    playlists: list[str] = typer.Option(
+        None, "--playlist", "-p", help="URL d'une playlist à télécharger. Peut être utilisé plusieurs fois."
     ),
     output_dir: Path = typer.Option(
         Path("downloads"),
@@ -186,84 +193,146 @@ def import_tunes(
         False,
         "--flat",
         "-f",
-        help="Télécharger tous les morceaux dans le dossier de sortie sans créer de sous-dossiers par artiste.",
+        help="Télécharger tous les morceaux dans le dossier de sortie sans créer de sous-dossiers par artiste (utilisé uniquement avec un fichier YAML).",
     ),
 ):
     """
-    Commande pour importer et télécharger des morceaux depuis un fichier YAML.
+    Commande pour importer et télécharger des morceaux.
     """
-    logger.info(f"Démarrage de l'importation depuis le fichier : {file_path}")
+    if not file_path and not tunes and not playlists:
+        console.print("[bold red]Erreur :[/bold red] Vous devez fournir un fichier YAML ou au moins une URL via --tune ou --playlist.")
+        raise typer.Exit(code=1)
+
     logger.info(f"Dossier de sortie : {output_dir}")
     logger.info(f"Qualité audio sélectionnée : {audio_quality}")
-    logger.info(f"Structure de dossiers plate : {flat}")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"Le dossier de sortie '{output_dir}' est prêt.")
 
-    try:
-        with open(file_path, "r", encoding="utf-8") as file:
-            data = yaml.safe_load(file)
-            artists = data.get("artistes", [])
-            logger.info(f"{len(artists)} artistes trouvés dans le fichier.")
+    if file_path:
+        logger.info(f"Démarrage de l'importation depuis le fichier : {file_path}")
+        logger.info(f"Structure de dossiers plate : {flat}")
+        try:
+            with open(file_path, "r", encoding="utf-8") as file:
+                data = yaml.safe_load(file)
+                artists = data.get("artistes", [])
+                logger.info(f"{len(artists)} artistes trouvés dans le fichier.")
 
-        for artist in artists:
-            artist_name = artist.get("name")
-            tunes = artist.get("tunes", [])
+            for artist in artists:
+                artist_name = artist.get("name")
+                yaml_tunes = artist.get("tunes", [])
+                yaml_playlists = artist.get("playlists", [])
 
-            if not artist_name or not tunes:
-                logger.warning(
-                    f"Artiste ignoré car le nom ou la liste de morceaux est manquant : {artist}"
-                )
-                continue
-
-            console.print(f"🎤 Traitement de l'artiste : [bold cyan]{artist_name}[/bold cyan]")
-            
-            if flat:
-                final_output_dir = output_dir
-            else:
-                final_output_dir = output_dir / artist_name
-            
-            final_output_dir.mkdir(parents=True, exist_ok=True)
-
-            for tune_url in tunes:
-                console.print(f"  - Téléchargement de : [blue]{tune_url}[/blue]")
-                download_path_template = final_output_dir / "%(title)s.%(ext)s"
-                
-                ydl_opts = {
-                    "format": "bestaudio/best",
-                    "postprocessors": [
-                        {
-                            "key": "FFmpegExtractAudio",
-                            "preferredcodec": "mp3",
-                            "preferredquality": str(audio_quality),
-                        }
-                    ],
-                    "outtmpl": str(download_path_template),
-                    "quiet": True,
-                    "no_warnings": True,
-                    "noplaylist": True,
-                }
-                try:
-                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                        info = ydl.extract_info(tune_url, download=False)
-                        console.print(f"    [dim]Titre : {info.get('title', 'N/A')}[/dim]")
-                        ydl.download([tune_url])
-                    console.print(f"  [bold green]✓ Téléchargement réussi.[/bold green]")
-                except Exception as e:
-                    logger.error(
-                        f"Erreur lors du téléchargement de {tune_url}: {e}",
-                        exc_info=True,
+                if not artist_name or (not yaml_tunes and not yaml_playlists):
+                    logger.warning(
+                        f"Artiste ignoré car le nom ou les listes de contenus sont manquants : {artist}"
                     )
-                    console.print(f"  [bold red]✗ Échec du téléchargement.[/bold red]")
+                    continue
 
-    except (yaml.YAMLError, IOError) as e:
-        logger.error(
-            f"Erreur lors de la lecture ou de l'analyse du fichier YAML : {e}",
-            exc_info=True,
-        )
-        _handle_error(AppError(f"Impossible de lire ou d'analyser le fichier YAML : {e}"))
+                console.print(f"🎤 Traitement de l'artiste : [bold cyan]{artist_name}[/bold cyan]")
+                
+                final_output_dir = output_dir if flat else output_dir / artist_name
+                final_output_dir.mkdir(parents=True, exist_ok=True)
+
+                for tune_url in yaml_tunes:
+                    console.print(f"  - Traitement du morceau : [blue]{tune_url}[/blue]")
+                    _download_with_check(tune_url, final_output_dir, audio_quality, is_playlist=False)
+
+                for playlist_url in yaml_playlists:
+                    console.print(f"  - Traitement de la playlist : [blue]{playlist_url}[/blue]")
+                    _download_with_check(playlist_url, final_output_dir, audio_quality, is_playlist=True)
+
+        except (yaml.YAMLError, IOError) as e:
+            logger.error(
+                f"Erreur lors de la lecture ou de l'analyse du fichier YAML : {e}",
+                exc_info=True,
+            )
+            console.print(f"[bold red]Erreur :[/bold red] Impossible de lire ou d'analyser le fichier YAML : {e}")
+            raise typer.Exit(code=1)
+    
+    if tunes or playlists:
+        logger.info("Démarrage de l'importation depuis les options CLI.")
+        # En mode CLI, on télécharge tout dans le dossier de sortie (équivalent de --flat)
+        for tune_url in tunes or []:
+            console.print(f"  - Traitement du morceau : [blue]{tune_url}[/blue]")
+            _download_with_check(tune_url, output_dir, audio_quality, is_playlist=False)
+        
+        for playlist_url in playlists or []:
+            console.print(f"  - Traitement de la playlist : [blue]{playlist_url}[/blue]")
+            _download_with_check(playlist_url, output_dir, audio_quality, is_playlist=True)
+
 
     console.print("\n[bold green]✨ Importation et téléchargement terminés ![/bold green]")
+
+
+def _download_with_check(url: str, output_dir: Path, audio_quality: int, is_playlist: bool):
+    """
+    Vérifie si le contenu doit être téléchargé et lance le téléchargement.
+    """
+    ydl_opts_base = {
+        "format": "bestaudio/best",
+        "postprocessors": [
+            {
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "mp3",
+                "preferredquality": str(audio_quality),
+            }
+        ],
+        "quiet": True,
+        "no_warnings": True,
+        "noplaylist": not is_playlist,
+    }
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts_base) as ydl:
+            # Récupérer les informations sans télécharger
+            info = ydl.extract_info(url, download=False)
+            
+            if is_playlist:
+                entries = info.get("entries", [])
+                console.print(f"    [dim]Playlist '{info.get('title')}' contenant {len(entries)} morceaux.[/dim]")
+                for entry in entries:
+                    _process_entry(entry, output_dir, ydl_opts_base)
+            else:
+                _process_entry(info, output_dir, ydl_opts_base)
+
+    except Exception as e:
+        logger.error(
+            f"Erreur lors de la récupération des informations pour {url}: {e}",
+            exc_info=True,
+        )
+        console.print(f"  [bold red]✗ Échec de la récupération des informations.[/bold red]")
+
+
+def _process_entry(entry_info: dict, output_dir: Path, ydl_opts: dict):
+    """
+    Traite et télécharge une seule entrée (morceau).
+    """
+    title = entry_info.get("title", "N/A")
+    video_id = entry_info.get("id", "N/A")
+    # Nettoyer le titre pour créer un nom de fichier valide
+    safe_title = re.sub(r'[^A-Za-z0-9_]', '', title)
+    expected_filename = output_dir / f"{safe_title}.mp3"
+
+    console.print(f"    - [dim]Vérification de '{title}'...[/dim]")
+
+    if expected_filename.exists():
+        console.print(f"    [bold yellow]✓ Ignoré (déjà présent).[/bold yellow]")
+        return
+
+    download_path_template = output_dir / "%(title)s.%(ext)s"
+    ydl_opts["outtmpl"] = str(download_path_template)
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([f"https://www.youtube.com/watch?v={video_id}"])
+        console.print(f"    [bold green]✓ Téléchargement réussi.[/bold green]")
+    except Exception as e:
+        logger.error(
+            f"Erreur lors du téléchargement de {title}: {e}",
+            exc_info=True,
+        )
+        console.print(f"    [bold red]✗ Échec du téléchargement.[/bold red]")
 
 
 if __name__ == "__main__":

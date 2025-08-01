@@ -103,7 +103,38 @@ playlist-downloader partager "ID_DE_LA_PLAYLIST"
 
 === `importer`
 
-Importe une liste de morceaux depuis un fichier YAML et les télécharge.
+Importe et télécharge des morceaux et/ou des playlists.
+
+NOTE: La commande vérifie si un fichier MP3 existe déjà dans le dossier de destination avant de le télécharger pour économiser la bande passante.
+
+Cette commande peut être utilisée de deux manières :
+
+. En fournissant des URLs directement via les options `--tune` et `--playlist`.
+. En utilisant un fichier de configuration YAML pour des téléchargements en masse.
+
+==== Usage 1 : Via les options du CLI
+
+Pour des téléchargements rapides et directs.
+
+*Options* :
+* `--tune, -t URL`: URL d'un morceau à télécharger. Peut être utilisé plusieurs fois.
+* `--playlist, -p URL`: URL d'une playlist à télécharger. Peut être utilisé plusieurs fois.
+* `--output-dir, -o PATH`: Dossier de destination.
+* `--audio-quality, -q QUALITY`: Qualité audio (0=meilleure, 9=pire).
+
+*Exemples* :
+[source,bash]
+----
+# Télécharger un seul morceau
+playlist-downloader importer --tune "URL_DU_MORCEAU"
+
+# Télécharger plusieurs playlists dans un dossier spécifique
+playlist-downloader importer --playlist "URL_PLAYLIST_1" --playlist "URL_PLAYLIST_2" -o "ma_musique"
+----
+
+==== Usage 2 : Via un fichier YAML
+
+Pour organiser et télécharger des collections plus larges.
 
 *Usage* :
 [source,bash]
@@ -111,18 +142,25 @@ Importe une liste de morceaux depuis un fichier YAML et les télécharge.
 playlist-downloader importer [OPTIONS] CHEMIN_VERS_LE_FICHIER_YAML
 ----
 
-*Arguments* :
-* `CHEMIN_VERS_LE_FICHIER_YAML`: (Requis) Le chemin vers le fichier YAML contenant les artistes et les morceaux.
+Le fichier YAML vous permet de structurer les téléchargements par artiste.
 
-*Options* :
-* `--output-dir, -o`: Le dossier de destination pour les téléchargements. Par défaut: `downloads`.
-* `--audio-quality, -q`: La qualité audio (0 pour la meilleure, 9 pour la moins bonne). Par défaut: `0`.
-* `--flat, -f`: Télécharger tous les morceaux dans le dossier de sortie sans créer de sous-dossiers par artiste.
+*Exemple de `musique.yml`* :
+[source,yaml]
+----
+artistes:
+  - nom: "Daft Punk"
+    playlists:
+      - "https://www.youtube.com/playlist?list=PL_m2_h1nL2GVEOfE8J_4IEX2aFv1I4-pS"
+  - nom: "AC/DC"
+    morceaux:
+      - "https://www.youtube.com/watch?v=v2AC41dglnM" # Thunderstruck
+----
 
-*Exemple complet* :
+*Commande* :
 [source,bash]
 ----
-playlist-downloader importer musics.yml --output-dir "downloads/usb_stick" --audio-quality 0 --flat
+# L'option --flat met tous les fichiers dans le dossier de sortie, sans sous-dossier par artiste.
+playlist-downloader importer musique.yml --output-dir "ma_collection" --flat
 ----
 
 
