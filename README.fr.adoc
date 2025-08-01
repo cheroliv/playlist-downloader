@@ -5,7 +5,7 @@
 :source-highlighter: highlight.js
 :summary: YouTube Playlist Manager CLI : outil open source en ligne de commande pour créer, gérer, synchroniser et télécharger vos playlists YouTube. Basé sur Python, Typer, yt-dlp et l’API YouTube Data v3. Architecture modulaire, tests automatisés, gestion centralisée des erreurs.
 
-link:README.en.adoc[English Version]
+link:README.adoc[English Version]
 
 Un outil en ligne de commande pour gérer, synchroniser et télécharger vos playlists YouTube, conçu pour la robustesse, la testabilité et la simplicité d’utilisation.
 
