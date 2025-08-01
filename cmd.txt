@@ -1,1 +1,0 @@
-python -m playlist_downloader.cli importer musics.yml --output-dir downloads/usb_stick --audio-quality 0 --flat

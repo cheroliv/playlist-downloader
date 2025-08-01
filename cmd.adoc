@@ -1,0 +1,11 @@
+= Exemples of usage
+
+[source,console]
+----
+python -m playlist_downloader.cli importer musics.yml --output-dir downloads/usb_stick --audio-quality 0 --flat
+----
+
+[source,console]
+----
+rsync -avr  ~/workspace/__repositories__/playlist-downloader/downloads/usb_stick/  /media/cheroliv/2737-56D6
+----
