@@ -10,6 +10,8 @@ artistes:
       - "https://www.youtube.com/watch?v=u4peNrSkJ8k"
 
   - name: "Ayman Serhani"
+    playlists:
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=7K_SpSf4Mhk"
       - "https://www.youtube.com/watch?v=FgAbqk-dL8s"
@@ -24,6 +26,8 @@ artistes:
       - "https://www.youtube.com/watch?v=_OONwXD1kus"
 
   - name: "TiiwTiiw"
+    playlists:
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=f8NapGGtMvo"
       - "https://www.youtube.com/watch?v=keHEsFPBlTk"
@@ -63,20 +67,25 @@ artistes:
 
 
   - name: "Djamel Sghir"
-    playlist:
-      - "https://www.youtube.com/watch?v=CGmfSTOUfEI&list=RDEMxX9pbjfYXfZdVpeN4Ck6sQ&start_radio=1"
+    playlists:
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=SXSvwSGfbNE"
+      - "https://www.youtube.com/watch?v=hgJxCHEK2mA"
 
   - name: "Cheb Mimou"
     tunes:
       - "https://www.youtube.com/watch?v=9c3tN6flADE"
 
   - name: "Cheb Hasni"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=NQjxUPqgSKE"
 
   - name: "Cheb Mami"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=4aBxNH6ODc8"
       - "https://www.youtube.com/watch?v=bNC048fUqxg"
@@ -84,6 +93,8 @@ artistes:
 
 
   - name: "Cheb Khaled"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=bYGndvJhBuk"
       - "https://www.youtube.com/watch?v=bHd4UwJCLK0"
@@ -96,6 +107,8 @@ artistes:
       - "https://www.youtube.com/watch?v=Zef4HsGb474"
 
   - name: "Cheb Bilal"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://youtu.be/6niDAI8C6ZY?si=gqSV6l7b3QftmbL4"
 
@@ -117,6 +130,8 @@ artistes:
       - "https://www.youtube.com/watch?v=XpjzxTzsSew"
 
   - name: "Cheb Houssem"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=AkZKeOnUuTI"
 
@@ -129,6 +144,8 @@ artistes:
       - "https://www.youtube.com/watch?v=gXAnRuVlAvk"
 
   - name: "Saad Lamjarred"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=a7Vgun2HJso"
 
@@ -141,24 +158,34 @@ artistes:
       - "https://www.youtube.com/watch?v=KrluG8BTGBE"
 
   - name: "Cheb Lotfi"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=Q2kDfmCNCE4"
       - "https://www.youtube.com/watch?v=TLsxaH7se3w"
       - "https://www.youtube.com/watch?v=znK94Ozuye8"
 
   - name: "Bilal Sghir"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=iuid_jkoowY"
 
   - name: "Zina Daoudia"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=yA2LAqFAqV4"
 
   - name: "Cheba Souad"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=YXlU0mPzpE8"
 
   - name: "Amine La Colombe"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=FzzEaLVEr-k"
 
@@ -167,6 +194,8 @@ artistes:
       - "https://www.youtube.com/watch?v=8kTqRl50nLM"
 
   - name: "Cheb Omar"
+    tunes:
+      - "https://www.youtube.com/watch?v=w5hUR8gEbjQ"
 
   - name: "Mamine"
 

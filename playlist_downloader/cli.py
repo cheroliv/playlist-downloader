@@ -19,7 +19,7 @@ from . import logger_config # Important pour initialiser le logger
 from .domain.models import Playlist
 from .adapters.ytdlp_adapter import YTDLPAdapter
 from .domain.errors import AppError, DownloaderError
-from pymonad.either import Right, Left
+from pymonad.either import Right, Left, Either
 
 # Initialisation
 app = typer.Typer(
@@ -29,6 +29,8 @@ app = typer.Typer(
 )
 console = Console()
 logger = logging.getLogger(__name__)
+downloader = YTDLPAdapter()
+
 
 def _handle_error(error: AppError):
     """Affiche un message d'erreur formaté et quitte l'application."""
@@ -76,6 +78,7 @@ def download_playlist(
     url: str = typer.Argument(..., help="L'URL de la playlist à télécharger."),
     output_dir: str = typer.Option("downloads", "--output", "-o", help="Le dossier de destination."),
     quality: str = typer.Option("192", "--quality", "-q", help="Qualité audio (ex: '192', '320', 'best')."),
+    green: bool = typer.Option(False, "--green", help="Si activé, ne télécharge pas un morceau s'il existe déjà."),
 ):
     """
     Télécharge une playlist YouTube en fichiers MP3.
@@ -85,18 +88,94 @@ def download_playlist(
 
     playlist_id_match = re.search(r"list=([\w-]+)", url)
     if not playlist_id_match:
-        _handle_error(AppError("URL de playlist invalide."))
+        _handle_error(Left((AppError("URL de playlist invalide."), False)))
     
     playlist_id = playlist_id_match.group(1)
+    # TODO: Get playlist title from API
     playlist = Playlist(playlist_id=playlist_id, title=f"Playlist {playlist_id}", url=url)
-
-    downloader = YTDLPAdapter()
     
-    downloader.download_playlist(playlist, output_dir, quality).map(
+    downloader.download_playlist(playlist, output_dir, quality, green).map(
         lambda success_msg: console.print(f"[bold green]✓ {success_msg}[/bold green]")
     ).catch(
         _handle_error
     )
+
+@app.command(name="mettre-a-jour")
+def update_playlist(
+    url: str = typer.Argument(..., help="L'URL de la playlist à synchroniser."),
+    local_dir: Path = typer.Argument(..., help="Le dossier local à synchroniser.", exists=True, file_okay=False, dir_okay=True, readable=True),
+    audio_quality: int = typer.Option(
+        0,
+        "--audio-quality",
+        "-q",
+        min=0,
+        max=9,
+        help="Qualité audio (0 pour la meilleure, 9 pour la moins bonne).",
+    ),
+    delete: bool = typer.Option(False, "--delete", help="Supprimer les fichiers locaux qui ne sont plus dans la playlist."),
+):
+    """
+    Synchronise un dossier local avec une playlist YouTube.
+    """
+    logger.info(f"Commande 'mettre-a-jour' initiée pour l'URL : {url}")
+    logger.info(f"Dossier local : {local_dir}")
+    logger.info(f"Option de suppression activée : {delete}")
+
+    console.print(f"🔄 Préparation de la synchronisation de la playlist...")
+
+    # 1. Get remote playlist video titles
+    try:
+        with yt_dlp.YoutubeDL({"quiet": True, "no_warnings": True, "extract_flat": True}) as ydl:
+            info = ydl.extract_info(url, download=False)
+            remote_videos = {re.sub(r'[^A-Za-z0-9_]', '', entry['title']): entry['url'] for entry in info['entries']}
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération des informations de la playlist: {e}", exc_info=True)
+        console.print(f"[bold red]Erreur :[/bold red] Impossible de récupérer les informations de la playlist.")
+        raise typer.Exit(code=1)
+
+    console.print(f"📡 Playlist distante '{info.get('title')}' contient {len(remote_videos)} morceaux.")
+
+    # 2. Get local file names
+    local_files = {f.stem: f for f in local_dir.glob("*.mp3")}
+    sanitized_local_files = {re.sub(r'[^A-Za-z0-9_]', '', k): v for k, v in local_files.items()}
+
+    console.print(f"📁 Le dossier local contient {len(local_files)} morceaux.")
+
+    # 3. Find videos to download
+    videos_to_download_stems = set(remote_videos.keys()) - set(sanitized_local_files.keys())
+    console.print(f"📥 {len(videos_to_download_stems)} nouveaux morceaux à télécharger.")
+
+    # 4. Find local files to delete
+    files_to_delete_stems = set(sanitized_local_files.keys()) - set(remote_videos.keys())
+    if delete:
+        console.print(f"🔥 {len(files_to_delete_stems)} morceaux locaux à supprimer.")
+
+    # 5. Download missing videos
+    if videos_to_download_stems:
+        console.print("\n[bold]🚀 Démarrage du téléchargement...[/bold]")
+        for video_stem in videos_to_download_stems:
+            video_url = remote_videos[video_stem]
+            downloader.download_tune(video_url, str(local_dir), str(audio_quality), green=True).map(
+                lambda msg: console.print(f"  - [bold green]✓[/bold green] {msg}")
+            ).catch(
+                lambda err: console.print(f"  - [bold red]✗[/bold red] {err[0].message}")
+            )
+
+    # 6. Delete extra local files
+    if delete and files_to_delete_stems:
+        console.print("\n[bold]🗑️ Démarrage de la suppression...[/bold]")
+        for file_stem in files_to_delete_stems:
+            file_path = sanitized_local_files[file_stem]
+            try:
+                file_path.unlink()
+                console.print(f"  - [bold green]✓ Supprimé :[/bold green] {file_path.name}")
+            except OSError as e:
+                logger.error(f"Erreur lors de la suppression du fichier {file_path}: {e}", exc_info=True)
+                console.print(f"  - [bold red]✗ Échec de la suppression :[/bold red] {file_path.name}")
+
+
+    console.print("\n[bold green]✨ Synchronisation terminée ![/bold green]")
+
 
 @app.command(name="detruire")
 def delete_playlist_command(
@@ -195,6 +274,11 @@ def import_tunes(
         "-f",
         help="Télécharger tous les morceaux dans le dossier de sortie sans créer de sous-dossiers par artiste (utilisé uniquement avec un fichier YAML).",
     ),
+    green: bool = typer.Option(
+        False, 
+        "--green", 
+        help="Si activé, ne télécharge pas un morceau s'il existe déjà."
+    ),
 ):
     """
     Commande pour importer et télécharger des morceaux.
@@ -205,9 +289,18 @@ def import_tunes(
 
     logger.info(f"Dossier de sortie : {output_dir}")
     logger.info(f"Qualité audio sélectionnée : {audio_quality}")
+    logger.info(f"Mode Green activé : {green}")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"Le dossier de sortie '{output_dir}' est prêt.")
+
+    def handle_download_result(result: Either[DownloaderError, str], url: str):
+        if result.is_right():
+            msg = result.value
+            console.print(f"  [bold green]✓[/bold green] {Path(url).name}: {msg}")
+        else:
+            err, _ = result.monoid
+            console.print(f"  [bold red]✗[/bold red] {Path(url).name}: {err.message}")
 
     if file_path:
         logger.info(f"Démarrage de l'importation depuis le fichier : {file_path}")
@@ -224,9 +317,7 @@ def import_tunes(
                 yaml_playlists = artist.get("playlists", [])
 
                 if not artist_name or (not yaml_tunes and not yaml_playlists):
-                    logger.warning(
-                        f"Artiste ignoré car le nom ou les listes de contenus sont manquants : {artist}"
-                    )
+                    logger.warning(f"Artiste ignoré car le nom ou les listes de contenus sont manquants : {artist}")
                     continue
 
                 console.print(f"🎤 Traitement de l'artiste : [bold cyan]{artist_name}[/bold cyan]")
@@ -236,103 +327,37 @@ def import_tunes(
 
                 for tune_url in yaml_tunes:
                     console.print(f"  - Traitement du morceau : [blue]{tune_url}[/blue]")
-                    _download_with_check(tune_url, final_output_dir, audio_quality, is_playlist=False)
+                    result = downloader.download_tune(tune_url, str(final_output_dir), str(audio_quality), green)
+                    handle_download_result(result, tune_url)
 
                 for playlist_url in yaml_playlists:
                     console.print(f"  - Traitement de la playlist : [blue]{playlist_url}[/blue]")
-                    _download_with_check(playlist_url, final_output_dir, audio_quality, is_playlist=True)
+                    playlist_id_match = re.search(r"list=([\w-]+)", playlist_url)
+                    playlist_id = playlist_id_match.group(1) if playlist_id_match else "unknown_playlist"
+                    playlist = Playlist(playlist_id=playlist_id, title=f"Playlist {playlist_id}", url=playlist_url)
+                    result = downloader.download_playlist(playlist, str(final_output_dir), str(audio_quality), green)
+                    handle_download_result(result, playlist_url)
 
         except (yaml.YAMLError, IOError) as e:
-            logger.error(
-                f"Erreur lors de la lecture ou de l'analyse du fichier YAML : {e}",
-                exc_info=True,
-            )
-            console.print(f"[bold red]Erreur :[/bold red] Impossible de lire ou d'analyser le fichier YAML : {e}")
-            raise typer.Exit(code=1)
+            logger.error(f"Erreur lors de la lecture ou de l'analyse du fichier YAML : {e}", exc_info=True)
+            _handle_error((AppError(f"Impossible de lire ou d'analyser le fichier YAML : {e}"), False))
     
     if tunes or playlists:
         logger.info("Démarrage de l'importation depuis les options CLI.")
-        # En mode CLI, on télécharge tout dans le dossier de sortie (équivalent de --flat)
         for tune_url in tunes or []:
             console.print(f"  - Traitement du morceau : [blue]{tune_url}[/blue]")
-            _download_with_check(tune_url, output_dir, audio_quality, is_playlist=False)
+            result = downloader.download_tune(tune_url, str(output_dir), str(audio_quality), green)
+            handle_download_result(result, tune_url)
         
         for playlist_url in playlists or []:
             console.print(f"  - Traitement de la playlist : [blue]{playlist_url}[/blue]")
-            _download_with_check(playlist_url, output_dir, audio_quality, is_playlist=True)
-
+            playlist_id_match = re.search(r"list=([\w-]+)", playlist_url)
+            playlist_id = playlist_id_match.group(1) if playlist_id_match else "unknown_playlist"
+            playlist = Playlist(playlist_id=playlist_id, title=f"Playlist {playlist_id}", url=playlist_url)
+            result = downloader.download_playlist(playlist, str(output_dir), str(audio_quality), green)
+            handle_download_result(result, playlist_url)
 
     console.print("\n[bold green]✨ Importation et téléchargement terminés ![/bold green]")
-
-
-def _download_with_check(url: str, output_dir: Path, audio_quality: int, is_playlist: bool):
-    """
-    Vérifie si le contenu doit être téléchargé et lance le téléchargement.
-    """
-    ydl_opts_base = {
-        "format": "bestaudio/best",
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": str(audio_quality),
-            }
-        ],
-        "quiet": True,
-        "no_warnings": True,
-        "noplaylist": not is_playlist,
-    }
-
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts_base) as ydl:
-            # Récupérer les informations sans télécharger
-            info = ydl.extract_info(url, download=False)
-            
-            if is_playlist:
-                entries = info.get("entries", [])
-                console.print(f"    [dim]Playlist '{info.get('title')}' contenant {len(entries)} morceaux.[/dim]")
-                for entry in entries:
-                    _process_entry(entry, output_dir, ydl_opts_base)
-            else:
-                _process_entry(info, output_dir, ydl_opts_base)
-
-    except Exception as e:
-        logger.error(
-            f"Erreur lors de la récupération des informations pour {url}: {e}",
-            exc_info=True,
-        )
-        console.print(f"  [bold red]✗ Échec de la récupération des informations.[/bold red]")
-
-
-def _process_entry(entry_info: dict, output_dir: Path, ydl_opts: dict):
-    """
-    Traite et télécharge une seule entrée (morceau).
-    """
-    title = entry_info.get("title", "N/A")
-    video_id = entry_info.get("id", "N/A")
-    # Nettoyer le titre pour créer un nom de fichier valide
-    safe_title = re.sub(r'[^A-Za-z0-9_]', '', title)
-    expected_filename = output_dir / f"{safe_title}.mp3"
-
-    console.print(f"    - [dim]Vérification de '{title}'...[/dim]")
-
-    if expected_filename.exists():
-        console.print(f"    [bold yellow]✓ Ignoré (déjà présent).[/bold yellow]")
-        return
-
-    download_path_template = output_dir / "%(title)s.%(ext)s"
-    ydl_opts["outtmpl"] = str(download_path_template)
-
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([f"https://www.youtube.com/watch?v={video_id}"])
-        console.print(f"    [bold green]✓ Téléchargement réussi.[/bold green]")
-    except Exception as e:
-        logger.error(
-            f"Erreur lors du téléchargement de {title}: {e}",
-            exc_info=True,
-        )
-        console.print(f"    [bold red]✗ Échec du téléchargement.[/bold red]")
 
 
 if __name__ == "__main__":

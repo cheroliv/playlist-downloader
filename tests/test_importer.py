@@ -10,17 +10,17 @@ runner = CliRunner()
 @pytest.fixture
 def mock_youtube_dl():
     """Fixture pour mocker yt_dlp.YoutubeDL."""
-    with patch('yt_dlp.YoutubeDL') as mock:
+    with patch('playlist_downloader.adapters.ytdlp_adapter.yt_dlp.YoutubeDL') as mock:
         mock_instance = MagicMock()
         mock.return_value.__enter__.return_value = mock_instance
 
-        def side_effect(url, download=True):
+        def extract_info_side_effect(url, download=True):
             if "playlist" in url:
-                return {"title": url, "entries": [{"id": f"v_{url}_1", "title": f"Song from {url} 1"}, {"id": f"v_{url}_2", "title": f"Song from {url} 2"}]}
+                return {"title": url.replace("https://", ""), "entries": [{"id": f"v_{url}_1", "title": f"Song 1 from {url}"}, {"id": f"v_{url}_2", "title": f"Song 2 from {url}"}]}
             else:
-                return {"id": url.replace("https://", ""), "title": f"Tune {url}"}
+                return {"id": url.replace("https://", ""), "title": f"Tune from {url}"}
         
-        mock_instance.extract_info.side_effect = side_effect
+        mock_instance.extract_info.side_effect = extract_info_side_effect
         mock_instance.download.return_value = 0
         yield mock_instance
 
@@ -38,34 +38,24 @@ artistes:
     config_file = tmp_path / "config.yml"
     config_file.write_text(yaml_content)
     result = runner.invoke(app, ["importer", str(config_file), "-o", str(tmp_path)])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, result.stdout
     assert "Traitement de l'artiste : Artist With Playlist" in result.stdout
-    assert mock_youtube_dl.download.call_count == 3  # 2 from playlist + 1 from tune
+    # 1 call for the playlist, 1 call for the tune
+    assert mock_youtube_dl.download.call_count == 2
 
-def test_import_yaml_skips_existing(tmp_path, mock_youtube_dl):
-    """Vérifie que les fichiers existants sont ignorés en mode YAML."""
-    artist_dir = tmp_path / "Test Artist"
-    artist_dir.mkdir()
-    # Appliquer la même logique de nettoyage que dans le CLI
-    safe_title = "Songfromhttpsplaylist11"
-    (artist_dir / f"{safe_title}.mp3").touch()
-
-    mock_youtube_dl.extract_info.return_value = {
-        "title": "playlist1", 
-        "entries": [
-            {"id": "v_playlist1_1", "title": "Song from https---playlist1 1"},
-            {"id": "v_playlist1_2", "title": "Song from https---playlist1 2"}
-        ]
-    }
-
-    yaml_content = 'artistes:\n  - name: "Test Artist"\n    playlists: ["https://playlist1"]'
+@patch('pathlib.Path.exists', return_value=True)
+def test_import_yaml_skips_existing_with_green_flag(mock_exists, tmp_path, mock_youtube_dl):
+    """Vérifie que les fichiers existants sont ignorés en mode YAML avec --green."""
+    yaml_content = 'artistes:\n  - name: "Test Artist"\n    tunes: ["https://tune1"]'
     config_file = tmp_path / "config.yml"
     config_file.write_text(yaml_content)
-    result = runner.invoke(app, ["importer", str(config_file), "-o", str(tmp_path)])
     
-    assert result.exit_code == 0
-    assert "Ignoré (déjà présent)" in result.stdout
-    mock_youtube_dl.download.assert_called_once_with(['https://www.youtube.com/watch?v=v_https://playlist1_2'])
+    # Run with --green flag
+    result = runner.invoke(app, ["importer", str(config_file), "-o", str(tmp_path), "--green"])
+    
+    assert result.exit_code == 0, result.stdout
+    assert "déjà présent" in result.stdout
+    mock_youtube_dl.download.assert_not_called()
 
 def test_import_yaml_invalid_file(tmp_path):
     """Vérifie la gestion d'un fichier YAML invalide."""
@@ -80,16 +70,16 @@ def test_import_yaml_invalid_file(tmp_path):
 def test_import_cli_single_tune(tmp_path, mock_youtube_dl):
     """Vérifie le téléchargement d'un seul morceau via les options CLI."""
     result = runner.invoke(app, ["importer", "--tune", "https://tune1", "-o", str(tmp_path)])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, result.stdout
     assert "Traitement du morceau : https://tune1" in result.stdout
     mock_youtube_dl.download.assert_called_once()
 
 def test_import_cli_single_playlist(tmp_path, mock_youtube_dl):
     """Vérifie le téléchargement d'une seule playlist via les options CLI."""
     result = runner.invoke(app, ["importer", "--playlist", "https://playlist1", "-o", str(tmp_path)])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, result.stdout
     assert "Traitement de la playlist : https://playlist1" in result.stdout
-    assert mock_youtube_dl.download.call_count == 2
+    mock_youtube_dl.download.assert_called_once()
 
 def test_import_cli_multiple_sources(tmp_path, mock_youtube_dl):
     """Vérifie le téléchargement depuis plusieurs options --tune and --playlist."""
@@ -100,17 +90,16 @@ def test_import_cli_multiple_sources(tmp_path, mock_youtube_dl):
         "--tune", "https://tune2",
         "-o", str(tmp_path)
     ])
-    assert result.exit_code == 0
-    assert mock_youtube_dl.download.call_count == 4 # 1 (tune1) + 2 (playlist1) + 1 (tune2)
+    assert result.exit_code == 0, result.stdout
+    # 1 call for tune1, 1 for playlist1, 1 for tune2
+    assert mock_youtube_dl.download.call_count == 3
 
-def test_import_cli_skips_existing(tmp_path, mock_youtube_dl):
-    """Vérifie que les fichiers existants sont ignorés en mode CLI."""
-    safe_title = "Tunehttpstune1"
-    (tmp_path / f"{safe_title}.mp3").touch()
-    mock_youtube_dl.extract_info.return_value = {"id": "tune1", "title": "Tune https---tune1"}
-    result = runner.invoke(app, ["importer", "--tune", "https://tune1", "-o", str(tmp_path)])
-    assert result.exit_code == 0
-    assert "Ignoré (déjà présent)" in result.stdout
+@patch('pathlib.Path.exists', return_value=True)
+def test_import_cli_skips_existing_with_green_flag(mock_exists, tmp_path, mock_youtube_dl):
+    """Vérifie que les fichiers existants sont ignorés en mode CLI avec --green."""
+    result = runner.invoke(app, ["importer", "--tune", "https://tune1", "-o", str(tmp_path), "--green"])
+    assert result.exit_code == 0, result.stdout
+    assert "déjà présent" in result.stdout
     mock_youtube_dl.download.assert_not_called()
 
 
@@ -132,7 +121,8 @@ def test_import_yaml_and_cli_uses_both(tmp_path, mock_youtube_dl):
         "--tune", "https://tune_cli",
         "-o", str(tmp_path)
     ])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, result.stdout
     assert "Traitement de l'artiste : YAML Artist" in result.stdout
     assert "Traitement du morceau : https://tune_cli" in result.stdout
+    # 1 call for yaml tune, 1 for cli tune
     assert mock_youtube_dl.download.call_count == 2

@@ -80,8 +80,22 @@ Downloads all tracks from a playlist in MP3 format.
 *Usage*:
 [source,bash]
 ----
-playlist-downloader telecharger "PLAYLIST_URL" -o "my_folder" -q "best"
+playlist-downloader telecharger "PLAYLIST_URL" -o "my_folder" -q "best" --green
 ----
+
+The `--green` option prevents re-downloading a track if it is already present in the destination folder.
+
+=== `mettre-a-jour`
+
+Synchronizes a local directory with a YouTube playlist.
+
+*Usage*:
+[source,bash]
+----
+playlist-downloader mettre-a-jour "PLAYLIST_URL" "LOCAL_FOLDER_PATH" --delete
+----
+
+The `--delete` option removes local files that are no longer in the remote playlist.
 
 === `detruire`
 
@@ -123,15 +137,16 @@ For quick, direct downloads.
 * `--playlist, -p URL`: URL of a playlist to download. Can be used multiple times.
 * `--output-dir, -o PATH`: Destination folder.
 * `--audio-quality, -q QUALITY`: Audio quality (0=best, 9=worst).
+* `--green`: If enabled, does not download a track if it already exists.
 
 *Examples*:
 [source,bash]
 ----
 # Download a single track
-playlist-downloader importer --tune "TRACK_URL"
+playlist-downloader importer --tune "TRACK_URL" --green
 
 # Download multiple playlists to a specific folder
-playlist-downloader importer --playlist "PLAYLIST_URL_1" --playlist "PLAYLIST_URL_2" -o "my_music"
+playlist-downloader importer --playlist "PLAYLIST_URL_1" --playlist "PLAYLIST_URL_2" -o "my_music" --green
 ----
 
 ==== Usage 2: Via YAML File
@@ -146,7 +161,7 @@ playlist-downloader importer [OPTIONS] PATH_TO_YAML_FILE
 
 The YAML file allows you to structure downloads by artist.
 
-*Example `music.yml`*:
+*Example `musics.yml`*:
 [source,yaml]
 ----
 artists:
@@ -162,7 +177,7 @@ artists:
 [source,bash]
 ----
 # The --flat option puts all files in the output directory, without artist subfolders.
-playlist-downloader importer music.yml --output-dir "my_collection" --flat
+playlist-downloader importer musics.yml --output-dir "my_collection" --flat --green
 ----
 
 

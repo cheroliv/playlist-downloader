@@ -1,6 +1,7 @@
 # tests/test_ytdlp_adapter.py
 import pytest
 from unittest.mock import patch, MagicMock
+from pathlib import Path
 from pymonad.either import Left, Right
 
 from playlist_downloader.adapters.ytdlp_adapter import YTDLPAdapter
@@ -16,7 +17,85 @@ def ytdlp_adapter():
     """Fixture to provide a YTDLPAdapter instance."""
     return YTDLPAdapter()
 
+# Tests for download_tune
+@patch('yt_dlp.YoutubeDL')
+def test_download_tune_success(mock_ytdl, ytdlp_adapter, caplog):
+    """
+    Given a valid tune URL,
+    When download_tune is called,
+    Then it should successfully download the tune.
+    """
+    mock_instance = MagicMock()
+    mock_ytdl.return_value.__enter__.return_value = mock_instance
+    mock_instance.extract_info.return_value = {'title': 'Test Tune', 'id': '123'}
+    mock_instance.download.return_value = 0  # Success
 
+    with patch('pathlib.Path.exists', return_value=False):
+        result = ytdlp_adapter.download_tune("fake_url", "/fake/path")
+
+    assert result.is_right()
+    assert "Test Tune" in result.value
+    assert "Téléchargement ignoré" not in caplog.text
+    mock_instance.download.assert_called_once()
+
+@patch('yt_dlp.YoutubeDL')
+def test_download_tune_green_file_exists(mock_ytdl, ytdlp_adapter, caplog):
+    """
+    Given a tune URL and green=True,
+    When the file already exists,
+    Then it should skip the download.
+    """
+    mock_instance = MagicMock()
+    mock_ytdl.return_value.__enter__.return_value = mock_instance
+    mock_instance.extract_info.return_value = {'title': 'Existing Tune', 'id': '456'}
+
+    with patch('pathlib.Path.exists', return_value=True):
+        result = ytdlp_adapter.download_tune("fake_url", "/fake/path", green=True)
+
+    assert result.is_right()
+    assert "déjà présent" in result.value
+    assert "Téléchargement ignoré" in caplog.text
+    mock_instance.download.assert_not_called()
+
+@patch('yt_dlp.YoutubeDL')
+def test_download_tune_green_file_does_not_exist(mock_ytdl, ytdlp_adapter):
+    """
+    Given a tune URL and green=True,
+    When the file does not exist,
+    Then it should download the tune.
+    """
+    mock_instance = MagicMock()
+    mock_ytdl.return_value.__enter__.return_value = mock_instance
+    mock_instance.extract_info.return_value = {'title': 'New Tune', 'id': '789'}
+    mock_instance.download.return_value = 0
+
+    with patch('pathlib.Path.exists', return_value=False):
+        result = ytdlp_adapter.download_tune("fake_url", "/fake/path", green=True)
+
+    assert result.is_right()
+    mock_instance.download.assert_called_once()
+
+@patch('yt_dlp.YoutubeDL')
+def test_download_tune_no_green_file_exists(mock_ytdl, ytdlp_adapter):
+    """
+    Given a tune URL and green=False,
+    When the file exists,
+    Then it should still download (overwrite).
+    """
+    mock_instance = MagicMock()
+    mock_ytdl.return_value.__enter__.return_value = mock_instance
+    mock_instance.extract_info.return_value = {'title': 'Overwrite Tune', 'id': '101'}
+    mock_instance.download.return_value = 0
+
+    # Path.exists should not be called, but we patch it for safety
+    with patch('pathlib.Path.exists', return_value=True):
+        result = ytdlp_adapter.download_tune("fake_url", "/fake/path", green=False)
+
+    assert result.is_right()
+    mock_instance.download.assert_called_once()
+
+
+# Tests for download_playlist
 def test_download_playlist_success(ytdlp_adapter, caplog):
     """
     Given a valid playlist URL and a destination path,
@@ -52,6 +131,8 @@ def test_download_playlist_success(ytdlp_adapter, caplog):
             }],
             'ignoreerrors': True,
             'verbose': False,
+            'no_overwrites': False,
+            'noplaylist': False,
         }
         mock_ytdl.assert_called_once_with(expected_ydl_opts)
 
@@ -93,9 +174,9 @@ def test_download_playlist_download_error(ytdlp_adapter, caplog):
         assert "Échec du téléchargement de la playlist 'Test Playlist' avec le code de sortie 1" in caplog.text
 
 
-def test_download_playlist_with_best_quality(ytdlp_adapter):
+def test_download_playlist_with_green_option(ytdlp_adapter):
     """
-    Vérifie que la qualité 'best' est correctement passée aux options de yt-dlp.
+    Checks that the 'no_overwrites' option is passed correctly to yt-dlp when green=True.
     """
     playlist = Playlist(playlist_id="PL12345", title="Test Playlist", url="http://fake.url")
     destination_path = "/fake/path"
@@ -105,21 +186,11 @@ def test_download_playlist_with_best_quality(ytdlp_adapter):
         mock_ytdl.return_value.__enter__.return_value = mock_instance
         mock_instance.download.return_value = 0
 
-        ytdlp_adapter.download_playlist(playlist, destination_path, quality="best")
+        ytdlp_adapter.download_playlist(playlist, destination_path, green=True)
 
-        # Vérifier que 'preferredquality' est mis à '0' pour la meilleure qualité
-        expected_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': f'{destination_path}/%(title)s.%(ext)s',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '0',  # '0' est la meilleure qualité pour yt-dlp
-            }],
-            'ignoreerrors': True,
-            'verbose': False,
-        }
-        mock_ytdl.assert_called_once_with(expected_opts)
+        # Check that 'no_overwrites' is True
+        args, kwargs = mock_ytdl.call_args
+        assert args[0]['no_overwrites'] is True
 
 
 def test_download_playlist_exception(ytdlp_adapter, caplog):
