@@ -1,7 +1,7 @@
 = YouTube Playlist Manager CLI
 :toc:
 :icons: font
-:source-highlighter: pygments
+:source-highlighter: highlight.js
 
 Un outil en ligne de commande pour gérer, synchroniser et télécharger vos playlists YouTube, conçu pour la robustesse, la testabilité et la simplicité d’utilisation.
 

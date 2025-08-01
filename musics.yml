@@ -1,46 +1,84 @@
 artistes:
-  - nom: "Bilel tachini"
-    playlist:
-      - "https://example.com/daftpunk/playlist1"
-      - "https://example.com/daftpunk/playlist2"
-  - nom: "mirou hichem tgv"
-    playlist:
-      - "https://example.com/jmj/playlist1"
-      - "https://example.com/jmj/playlist2"
-  - nom: "mamine"
-    playlist:
-      - "https://example.com/justice/playlist1"
-  - nom: "hichem smati"
+
+  - name: "Cheikha Rimitti"
+
+  - name: "Cheb Hasni"
+
+  - name: "Cheb Mami"
+
+  - name: "Cheb Khaled"
+
+  - name: "Cheb Bilal"
+
+  - name: "Bilel Tachini"
+    tunes:
+      - "https://www.youtube.com/watch?v=tnKgcFAV3ug"
+      - "https://www.youtube.com/watch?v=YBETWFkzTtM"
+      - "https://www.youtube.com/watch?v=6-UOmjw9viQ"
+      - "https://www.youtube.com/watch?v=bYGndvJhBuk"
+
+  - name: "Mirou Hichem TGV"
+
+  - name: "Mamine"
+    tunes:
+
+  - name: "Hichem Smati"
     playlist:
       - "https://example.com/justice/playlist2"
 
-  - nom: "djalil"
+  - name: "Djalil"
     playlist:
       - "https://example.com/justice/playlist3"
-  - nom: "Bilal Babylo"
+
+  - name: "Bilal Babylo"
     playlist:
       - "https://example.com/justice/playlist4"
-  - nom: "kader japonais"
+
+  - name: "Kader Japonais"
     playlist:
       - "https://example.com/justice/playlist5"
-  - nom: "cheb houssem"
+
+  - name: "Cheb Houssem"
     playlist:
       - "https://example.com/justice/playlist6"
-  - nom: "cheb adjel"
+
+  - name: "Cheb Adjel"
     playlist:
       - "https://example.com/justice/playlist7"
-  - nom: "cheb lotion"
+
+  - name: "Cheb Lotion"
     playlist:
       - "https://example.com/justice/playlist8"
-  - nom: "Bilal sghir"
+
+  - name: "Bilal Sghir"
     playlist:
       - "https://example.com/justice/playlist9"
-  - nom: "cheb souad"
+
+  - name: "Cheba Souad"
     playlist:
       - "https://example.com/justice/playlist10"
-  - nom: "Amine la colombe"
+
+  - name: "Amine La Colombe"
     playlist:
       - "https://example.com/justice/playlist11"
-  - nom: "cheb omar"
+
+  - name: "Cheb Omar"
     playlist:
       - "https://example.com/justice/playlist12"
+
+  - name: "Ayman Serhani"
+    playlist:
+      - "https://example.com/justice/playlist13"
+    tunes:
+        - "https://www.youtube.com/watch?v=7K_SpSf4Mhk"
+        - "https://www.youtube.com/watch?v=FgAbqk-dL8s"
+        - "https://www.youtube.com/watch?v=YTINAQoU4oo"
+        - "https://www.youtube.com/watch?v=8MMV1qvWrOI"
+        - "https://www.youtube.com/watch?v=xKloph88xzM"
+        - "https://www.youtube.com/watch?v=Tf0xzIeQp2g"
+
+  - name: "TiiwTiiw"
+    playlist:
+    tunes:
+      - "https://www.youtube.com/watch?v=f8NapGGtMvo"
+      - ""
