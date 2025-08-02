@@ -5,9 +5,9 @@ import re
 from pathlib import Path
 from pymonad.either import Left, Right, Either
 
-from playlist_downloader.domain.models import Playlist
-from playlist_downloader.domain.ports import MusicDownloader
-from playlist_downloader.domain.errors import DownloaderError
+from domain.models import Playlist
+from domain.ports import MusicDownloader
+from domain.errors import DownloaderError
 
 logger = logging.getLogger(__name__)
 

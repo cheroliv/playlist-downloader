@@ -1,8 +1,8 @@
 
 import pytest
 from unittest.mock import MagicMock, patch
-from playlist_downloader.auth import get_credentials
-from playlist_downloader.domain.errors import AuthenticationError
+from auth import get_credentials
+from domain.errors import AuthenticationError
 
 # Scénario 1: Le fichier client_secret est manquant
 def test_get_credentials_no_secret_file(mocker, caplog):

@@ -6,8 +6,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
-from . import logger_config
-from .domain.errors import AuthenticationError
+import logger_config
+from domain.errors import AuthenticationError
 
 logger = logging.getLogger(__name__)
 

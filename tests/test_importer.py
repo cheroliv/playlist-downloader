@@ -3,14 +3,14 @@ from typer.testing import CliRunner
 from unittest.mock import patch, MagicMock
 from pathlib import Path
 
-from playlist_downloader.cli import app
+from cli import app
 
 runner = CliRunner()
 
 @pytest.fixture
 def mock_youtube_dl():
     """Fixture pour mocker yt_dlp.YoutubeDL."""
-    with patch('playlist_downloader.adapters.ytdlp_adapter.yt_dlp.YoutubeDL') as mock:
+    with patch('adapters.ytdlp_adapter.yt_dlp.YoutubeDL') as mock:
         mock_instance = MagicMock()
         mock.return_value.__enter__.return_value = mock_instance
 

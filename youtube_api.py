@@ -3,8 +3,8 @@ from pymonad.either import Left, Right
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from . import logger_config
-from .domain.errors import YouTubeApiError
+import logger_config
+from domain.errors import YouTubeApiError
 
 logger = logging.getLogger(__name__)
 

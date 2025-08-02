@@ -4,10 +4,10 @@ from unittest.mock import patch, MagicMock
 from pathlib import Path
 from pymonad.either import Left, Right
 
-from playlist_downloader.adapters.ytdlp_adapter import YTDLPAdapter
-from playlist_downloader.domain.models import Playlist
-from playlist_downloader.domain.errors import DownloaderError
-from playlist_downloader.logger_config import setup_logger
+from adapters.ytdlp_adapter import YTDLPAdapter
+from domain.models import Playlist
+from domain.errors import DownloaderError
+from logger_config import setup_logger
 
 # Setup logger for tests
 setup_logger()

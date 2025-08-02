@@ -7,18 +7,18 @@ from pathlib import Path
 import yt_dlp
 
 # Correction des imports pour la nouvelle structure
-from .auth import get_credentials
-from .youtube_api import (
+from auth import get_credentials
+from youtube_api import (
     create_playlist as api_create_playlist, 
     delete_playlist as api_delete_playlist,
     get_playlist_url as api_get_playlist_url
 )
-from . import logger_config # Important pour initialiser le logger
+import logger_config # Important pour initialiser le logger
 
 # Import des nouveaux éléments d'architecture
-from .domain.models import Playlist
-from .adapters.ytdlp_adapter import YTDLPAdapter
-from .domain.errors import AppError, DownloaderError
+from domain.models import Playlist
+from adapters.ytdlp_adapter import YTDLPAdapter
+from domain.errors import AppError, DownloaderError
 from pymonad.either import Right, Left, Either
 
 # Initialisation
