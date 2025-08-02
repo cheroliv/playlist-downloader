@@ -1,4 +1,3 @@
-# src/playlist_downloader/domain/models.py
 from dataclasses import dataclass
 
 

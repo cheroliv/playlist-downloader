@@ -1,4 +1,3 @@
-# src/playlist_downloader/domain/ports.py
 from abc import ABC, abstractmethod
 from pymonad.either import Either
 from .models import Playlist

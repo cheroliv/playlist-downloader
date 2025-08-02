@@ -1,4 +1,3 @@
-# src/playlist_downloader/adapters/ytdlp_adapter.py
 import logging
 import yt_dlp
 import re
