@@ -100,8 +100,14 @@ _current_lang = "en"
 
 def get_default_lang():
     try:
-        lang_code, _ = locale.getdefaultlocale()
-        return "fr" if lang_code and lang_code.startswith("fr") else "en"
+        # Attempt to get the current locale
+        current_locale = locale.getlocale()
+        lang_code = current_locale[0] if current_locale and current_locale[0] else None
+
+        if lang_code and lang_code.startswith("fr"):
+            return "fr"
+        else:
+            return "en"
     except (ValueError, TypeError):
         return "en"
 

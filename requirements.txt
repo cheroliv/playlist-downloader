@@ -8,3 +8,7 @@ PyYAML
 # --- Dépendances de développement et de test ---
 pytest
 pytest-mock
+ruff
+setuptools
+wheel
+twine
