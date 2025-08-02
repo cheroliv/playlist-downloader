@@ -1,19 +1,19 @@
-= Exemples of usage
+= Examples of Usage
 :toc: macro
 :icons: font
 :source-highlighter: highlight.js
-:summary: Exemples d'utilisation de l'outil en ligne de commande pour gérer,
+:summary: Examples of usage for the command-line tool to manage YouTube playlists.
 
 
 ---
 
-== Importer
+== Import
 [source,console]
 ----
-python -m playlist_downloader.cli importer musics.yml --output-dir downloads/usb_stick --audio-quality 0 --flat
+playlist-downloader --lang en import musics.yml --output-dir downloads/usb_stick --audio-quality 0 --flat
 ----
 
-== Synchroniser avec une clé USB
+== Synchronize with a USB key
 [source,console]
 ----
 rsync -avr  ~/workspace/__repositories__/playlist-downloader/downloads/usb_stick/  /media/cheroliv/2737-56D6

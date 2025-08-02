@@ -11,11 +11,11 @@ Un outil en ligne de commande pour gérer, synchroniser et télécharger vos pla
 
 == Fonctionnalités
 
-* Création de playlists YouTube (`creer`)
-* Téléchargement de playlists au format MP3 (`telecharger`)
-* Synchronisation locale/distante (`mettre-a-jour`)
-* Suppression de playlists (`detruire`)
-* Récupération de l’URL de partage (`partager`)
+* Création de playlists YouTube (`create`)
+* Téléchargement de playlists au format MP3 (`download`)
+* Synchronisation locale/distante (`update`)
+* Suppression de playlists (`delete`)
+* Récupération de l’URL de partage (`share`)
 
 == Stack Technique
 
@@ -61,61 +61,73 @@ pip install -r requirements.txt
 
 Les commandes suivantes sont disponibles via le CLI.
 
-=== `creer`
+=== Sélection de la Langue (`--lang`)
+
+Vous pouvez définir la langue de sortie du CLI en utilisant l'option `--lang`. Actuellement, 'en' (anglais) et 'fr' (français) sont supportées.
+
+*Usage* :
+[source,bash]
+----
+playlist-downloader --lang fr create --name "Ma Super Playlist"
+----
+
+
+
+=== `create`
 
 Crée une nouvelle playlist YouTube.
 
 *Usage* :
 [source,bash]
 ----
-playlist-downloader creer --titre "Ma Super Playlist" --description "Les meilleurs sons de 2025." --public
+playlist-downloader create --name "Ma Super Playlist" --description "Les meilleurs sons de 2025." --public
 ----
 
-=== `telecharger`
+=== `download`
 
 Télécharge tous les morceaux d'une playlist au format MP3.
 
 *Usage* :
 [source,bash]
 ----
-playlist-downloader telecharger "URL_DE_LA_PLAYLIST" -o "mon_dossier" -q "best" --green
+playlist-downloader download "URL_DE_LA_PLAYLIST" -o "mon_dossier" -q "best" --green
 ----
 
 L'option `--green` permet de ne pas re-télécharger un morceau s'il est déjà présent dans le dossier de destination.
 
-=== `mettre-a-jour`
+=== `update`
 
 Synchronise un dossier local avec une playlist YouTube.
 
 *Usage* :
 [source,bash]
 ----
-playlist-downloader mettre-a-jour "URL_DE_LA_PLAYLIST" "CHEMIN_DU_DOSSIER_LOCAL" --delete
+playlist-downloader update "URL_DE_LA_PLAYLIST" "CHEMIN_DU_DOSSIER_LOCAL" --delete
 ----
 
 L'option `--delete` supprime les fichiers locaux qui ne sont plus présents dans la playlist distante.
 
-=== `detruire`
+=== `delete`
 
 Supprime une playlist YouTube.
 
 *Usage* :
 [source,bash]
 ----
-playlist-downloader detruire "ID_DE_LA_PLAYLIST"
+playlist-downloader delete "ID_DE_LA_PLAYLIST"
 ----
 
-=== `partager`
+=== `share`
 
 Récupère l'URL de partage d'une playlist.
 
 *Usage* :
 [source,bash]
 ----
-playlist-downloader partager "ID_DE_LA_PLAYLIST"
+playlist-downloader share "ID_DE_LA_PLAYLIST"
 ----
 
-=== `importer`
+=== `import`
 
 Importe et télécharge des morceaux et/ou des playlists.
 
@@ -141,10 +153,10 @@ Pour des téléchargements rapides et directs.
 [source,bash]
 ----
 # Télécharger un seul morceau
-playlist-downloader importer --tune "URL_DU_MORCEAU" --green
+playlist-downloader import --tune "URL_DU_MORCEAU" --green
 
 # Télécharger plusieurs playlists dans un dossier spécifique
-playlist-downloader importer --playlist "URL_PLAYLIST_1" --playlist "URL_PLAYLIST_2" -o "ma_musique" --green
+playlist-downloader import --playlist "URL_PLAYLIST_1" --playlist "URL_PLAYLIST_2" -o "ma_musique" --green
 ----
 
 ==== Usage 2 : Via un fichier YAML
@@ -154,7 +166,7 @@ Pour organiser et télécharger des collections plus larges.
 *Usage* :
 [source,bash]
 ----
-playlist-downloader importer [OPTIONS] CHEMIN_VERS_LE_FICHIER_YAML
+playlist-downloader import [OPTIONS] CHEMIN_VERS_LE_FICHIER_YAML
 ----
 
 Le fichier YAML vous permet de structurer les téléchargements par artiste.
@@ -175,7 +187,7 @@ artistes:
 [source,bash]
 ----
 # L'option --flat met tous les fichiers dans le dossier de sortie, sans sous-dossier par artiste.
-playlist-downloader importer musics.yml --output-dir "ma_collection" --flat --green
+playlist-downloader import musics.yml --output-dir "ma_collection" --flat --green
 ----
 
 
@@ -190,22 +202,31 @@ playlist-downloader importer musics.yml --output-dir "ma_collection" --flat --gr
 
 [source]
 ----
-playlist_downloader/
-  cli.py
-  auth.py
-  youtube_api.py
-  logger_config.py
-  adapters/
-    ytdlp_adapter.py
-  domain/
-    models.py
-    ports.py
-    errors.py
-  services/
-tests/
-  test_auth.py
-  test_youtube_api.py
-  test_ytdlp_adapter.py
+.
+├── auth.py
+├── cli.py
+├── cmd.adoc
+├── downloader.py
+├── i18n.py
+├── logger_config.py
+├── musics.yml
+├── README.adoc
+├── README.fr.adoc
+├── requirements.txt
+├── youtube_api.py
+├── adapters/
+│   └── ytdlp_adapter.py
+├── domain/
+│   ├── errors.py
+│   ├── models.py
+│   └── ports.py
+├── services/
+├── tests/
+│   ├── test_auth.py
+│   ├── test_importer.py
+│   ├── test_youtube_api.py
+│   └── test_ytdlp_adapter.py
+└── venv/
 ----
 
 == Tests

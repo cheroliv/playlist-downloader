@@ -13,11 +13,11 @@ A command-line tool to manage, sync, and download your YouTube playlists, design
 
 == Features
 
-* Create YouTube playlists (`creer`)
-* Download playlists in MP3 format (`telecharger`)
-* Local/remote synchronization (`mettre-a-jour`)
-* Delete playlists (`detruire`)
-* Get the sharing URL (`partager`)
+* Create YouTube playlists (`create`)
+* Download playlists in MP3 format (`download`)
+* Local/remote synchronization (`update`)
+* Delete playlists (`delete`)
+* Get the sharing URL (`share`)
 
 == Tech Stack
 
@@ -63,61 +63,73 @@ pip install -r requirements.txt
 
 The following commands are available through the CLI.
 
-=== `creer`
+=== Language Selection (`--lang`)
+
+You can set the output language of the CLI using the `--lang` option. Currently, 'en' (English) and 'fr' (French) are supported.
+
+*Usage*:
+[source,bash]
+----
+playlist-downloader --lang fr create --name "Ma Super Playlist"
+----
+
+
+
+=== `create`
 
 Creates a new YouTube playlist.
 
 *Usage*:
 [source,bash]
 ----
-playlist-downloader creer --titre "My Awesome Playlist" --description "The best tracks of 2025." --public
+playlist-downloader create --name "My Awesome Playlist" --description "The best tracks of 2025." --public
 ----
 
-=== `telecharger`
+=== `download`
 
 Downloads all tracks from a playlist in MP3 format.
 
 *Usage*:
 [source,bash]
 ----
-playlist-downloader telecharger "PLAYLIST_URL" -o "my_folder" -q "best" --green
+playlist-downloader download "PLAYLIST_URL" -o "my_folder" -q "best" --green
 ----
 
 The `--green` option prevents re-downloading a track if it is already present in the destination folder.
 
-=== `mettre-a-jour`
+=== `update`
 
 Synchronizes a local directory with a YouTube playlist.
 
 *Usage*:
 [source,bash]
 ----
-playlist-downloader mettre-a-jour "PLAYLIST_URL" "LOCAL_FOLDER_PATH" --delete
+playlist-downloader update "PLAYLIST_URL" "LOCAL_FOLDER_PATH" --delete
 ----
 
 The `--delete` option removes local files that are no longer in the remote playlist.
 
-=== `detruire`
+=== `delete`
 
 Deletes a YouTube playlist.
 
 *Usage*:
 [source,bash]
 ----
-playlist-downloader detruire "PLAYLIST_ID"
+playlist-downloader delete "PLAYLIST_ID"
 ----
 
-=== `partager`
+=== `share`
 
 Gets the sharing URL for a playlist.
 
 *Usage*:
 [source,bash]
 ----
-playlist-downloader partager "PLAYLIST_ID"
+playlist-downloader share "PLAYLIST_ID"
 ----
 
-=== `importer`
+=== `import`
 
 Imports and downloads tracks and/or playlists.
 
@@ -143,10 +155,10 @@ For quick, direct downloads.
 [source,bash]
 ----
 # Download a single track
-playlist-downloader importer --tune "TRACK_URL" --green
+playlist-downloader import --tune "TRACK_URL" --green
 
 # Download multiple playlists to a specific folder
-playlist-downloader importer --playlist "PLAYLIST_URL_1" --playlist "PLAYLIST_URL_2" -o "my_music" --green
+playlist-downloader import --playlist "PLAYLIST_URL_1" --playlist "PLAYLIST_URL_2" -o "my_music" --green
 ----
 
 ==== Usage 2: Via YAML File
@@ -156,7 +168,7 @@ To organize and download larger collections.
 *Usage*:
 [source,bash]
 ----
-playlist-downloader importer [OPTIONS] PATH_TO_YAML_FILE
+playlist-downloader import [OPTIONS] PATH_TO_YAML_FILE
 ----
 
 The YAML file allows you to structure downloads by artist.
@@ -177,7 +189,7 @@ artists:
 [source,bash]
 ----
 # The --flat option puts all files in the output directory, without artist subfolders.
-playlist-downloader importer musics.yml --output-dir "my_collection" --flat --green
+playlist-downloader import musics.yml --output-dir "my_collection" --flat --green
 ----
 
 
@@ -192,22 +204,31 @@ playlist-downloader importer musics.yml --output-dir "my_collection" --flat --gr
 
 [source]
 ----
-playlist_downloader/
-  cli.py
-  auth.py
-  youtube_api.py
-  logger_config.py
-  adapters/
-    ytdlp_adapter.py
-  domain/
-    models.py
-    ports.py
-    errors.py
-  services/
-tests/
-  test_auth.py
-  test_youtube_api.py
-  test_ytdlp_adapter.py
+.
+├── auth.py
+├── cli.py
+├── cmd.adoc
+├── downloader.py
+├── i18n.py
+├── logger_config.py
+├── musics.yml
+├── README.adoc
+├── README.fr.adoc
+├── requirements.txt
+├── youtube_api.py
+├── adapters/
+│   └── ytdlp_adapter.py
+├── domain/
+│   ├── errors.py
+│   ├── models.py
+│   └── ports.py
+├── services/
+├── tests/
+│   ├── test_auth.py
+│   ├── test_importer.py
+│   ├── test_youtube_api.py
+│   └── test_ytdlp_adapter.py
+└── venv/
 ----
 
 == Tests

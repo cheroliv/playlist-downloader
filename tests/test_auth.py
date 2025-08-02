@@ -4,13 +4,13 @@ from unittest.mock import MagicMock, patch
 from auth import get_credentials
 from domain.errors import AuthenticationError
 
-# Scénario 1: Le fichier client_secret est manquant
+# Scenario 1: client_secret.json file is missing
 def test_get_credentials_no_secret_file(mocker, caplog):
     """
-    Vérifie que la fonction retourne une erreur si client_secret.json est introuvable.
-    LDD: Vérifie que le log d'erreur est bien émis.
+    Checks that the function returns an error if client_secret.json is not found.
+    LDD: Verifies that the error log is emitted correctly.
     """
-    # Le premier appel (token) retourne False, le second (secret) aussi.
+    # The first call (token) returns False, the second (secret) also returns False.
     mocker.patch('os.path.exists', side_effect=[False, False])
     
     result = get_credentials(client_secrets_file='fake_secrets.json')
@@ -19,18 +19,18 @@ def test_get_credentials_no_secret_file(mocker, caplog):
     # We extract the value from the monad for the check
     error_value, _ = result.monoid
     assert isinstance(error_value, AuthenticationError)
-    assert "introuvable" in error_value.message
-    # Vérification du log
-    assert "Fichier secrets 'fake_secrets.json' introuvable." in caplog.text
+    assert "not found" in error_value.message
+    # Log verification
+    assert "Secrets file 'fake_secrets.json' not found." in caplog.text
 
-# Scénario 2: Authentification complète réussie (pas de token existant)
+# Scenario 2: Full authentication successful (no existing token)
 def test_get_credentials_full_flow_success(mocker, caplog):
     """
-    Simule le flux d'authentification complet et vérifie le succès.
-    LDD: Vérifie les logs d'info pour le flux et la sauvegarde.
+    Simulates the complete authentication flow and verifies success.
+    LDD: Verifies the info logs for the flow and saving process.
     """
-    # Mocker les dépendances externes
-    mocker.patch('os.path.exists', side_effect=[False, True]) # token n'existe pas, secret existe
+    # Mock external dependencies
+    mocker.patch('os.path.exists', side_effect=[False, True]) # token does not exist, secret exists
     mock_creds = MagicMock()
     mock_creds.to_json.return_value = '{"token": "mock"}'
     
@@ -38,23 +38,23 @@ def test_get_credentials_full_flow_success(mocker, caplog):
     mock_flow.run_local_server.return_value = mock_creds
     mocker.patch('google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file', return_value=mock_flow)
     
-    # Mocker l'écriture du fichier
+    # Mock file writing
     mocker.patch('builtins.open', mocker.mock_open())
 
     result = get_credentials()
 
     assert result.is_right()
     assert result.value == mock_creds
-    # Vérification des logs
-    assert "Aucun token valide trouvé" in caplog.text
-    assert "Authentification réussie via le flux local" in caplog.text
-    assert "Token sauvegardé dans 'token.json'" in caplog.text
+    # Log verification
+    assert "No valid token found" in caplog.text
+    assert "Authentication successful via local flow" in caplog.text
+    assert "Token saved to 'token.json'" in caplog.text
 
-# Scénario 3: Token existant et valide
+# Scenario 3: Existing and valid token
 def test_get_credentials_valid_token_exists(mocker, caplog):
     """
-    Vérifie que les credentials sont chargés depuis un token existant et valide.
-    LDD: Vérifie le log de succès.
+    Checks that credentials are loaded from an existing and valid token.
+    LDD: Verifies the success log.
     """
     mocker.patch('os.path.exists', return_value=True)
     mock_creds = MagicMock()
@@ -65,14 +65,14 @@ def test_get_credentials_valid_token_exists(mocker, caplog):
 
     assert result.is_right()
     assert result.value == mock_creds
-    assert "Credentials valides obtenus" in caplog.text
-    assert "Fichier token 'token.json' trouvé" in caplog.text
+    assert "Valid credentials obtained" in caplog.text
+    assert "Token file 'token.json' found" in caplog.text
 
-# Scénario 4: Token expiré mais rafraîchissement réussi
+# Scenario 4: Expired token but successful refresh
 def test_get_credentials_expired_token_refresh_success(mocker, caplog):
     """
-    Vérifie que le token est rafraîchi avec succès.
-    LDD: Vérifie les logs de rafraîchissement.
+    Checks that the token is refreshed successfully.
+    LDD: Verifies the refresh logs.
     """
     mocker.patch('os.path.exists', return_value=True)
     mock_creds = MagicMock()
@@ -80,7 +80,7 @@ def test_get_credentials_expired_token_refresh_success(mocker, caplog):
     mock_creds.expired = True
     mock_creds.refresh_token = "fake_refresh_token"
     
-    # La méthode refresh ne retourne rien, elle modifie l'objet en place
+    # The refresh method returns nothing, it modifies the object in place
     mock_creds.refresh.return_value = None
     mocker.patch('google.oauth2.credentials.Credentials.from_authorized_user_file', return_value=mock_creds)
     mocker.patch('builtins.open', mocker.mock_open())
@@ -89,6 +89,6 @@ def test_get_credentials_expired_token_refresh_success(mocker, caplog):
 
     assert result.is_right()
     mock_creds.refresh.assert_called_once()
-    assert "Token expiré, tentative de rafraîchissement..." in caplog.text
-    assert "Token rafraîchi avec succès." in caplog.text
-    assert "Token sauvegardé" in caplog.text
+    assert "Token expired, attempting refresh..." in caplog.text
+    assert "Token refreshed successfully." in caplog.text
+    assert "Token saved" in caplog.text

@@ -34,7 +34,7 @@ def test_download_tune_success(mock_ytdl, ytdlp_adapter, caplog):
 
     assert result.is_right()
     assert "Test Tune" in result.value
-    assert "Téléchargement ignoré" not in caplog.text
+    assert "Download skipped" not in caplog.text
     mock_instance.download.assert_called_once()
 
 @patch('yt_dlp.YoutubeDL')
@@ -52,8 +52,8 @@ def test_download_tune_green_file_exists(mock_ytdl, ytdlp_adapter, caplog):
         result = ytdlp_adapter.download_tune("fake_url", "/fake/path", green=True)
 
     assert result.is_right()
-    assert "déjà présent" in result.value
-    assert "Téléchargement ignoré" in caplog.text
+    assert "already exists" in result.value
+    assert "Skipping download" in caplog.text
     mock_instance.download.assert_not_called()
 
 @patch('yt_dlp.YoutubeDL')
@@ -117,7 +117,7 @@ def test_download_playlist_success(ytdlp_adapter, caplog):
 
         # Then
         assert result.is_right()
-        assert result.value == f"Playlist '{playlist.title}' téléchargée avec succès dans '{destination_path}'."
+        assert result.value == f"Playlist '{playlist.title}' downloaded successfully to '{destination_path}'."
 
         # Check that YoutubeDL was called with the correct options
         expected_ydl_opts = {
@@ -139,8 +139,8 @@ def test_download_playlist_success(ytdlp_adapter, caplog):
         mock_instance.download.assert_called_once_with([playlist_url])
 
         # Check logs
-        assert "Début du téléchargement de la playlist 'Test Playlist'..." in caplog.text
-        assert f"Playlist '{playlist.title}' téléchargée avec succès." in caplog.text
+        assert "Starting download of playlist 'Test Playlist'..." in caplog.text
+        assert f"Playlist '{playlist.title}' downloaded successfully." in caplog.text
 
 
 def test_download_playlist_download_error(ytdlp_adapter, caplog):
@@ -166,11 +166,11 @@ def test_download_playlist_download_error(ytdlp_adapter, caplog):
         assert result.is_left()
         error_value, _ = result.monoid
         assert isinstance(error_value, DownloaderError)
-        assert "Erreur lors du téléchargement de la playlist" in error_value.message
+        assert "Error downloading playlist" in error_value.message
 
         # Check logs
-        assert "Début du téléchargement de la playlist 'Test Playlist'..." in caplog.text
-        assert "Échec du téléchargement de la playlist 'Test Playlist' avec le code de sortie 1" in caplog.text
+        assert "Starting download of playlist 'Test Playlist'..." in caplog.text
+        assert "Failed to download playlist 'Test Playlist' with exit code 1" in caplog.text
 
 
 def test_download_playlist_with_green_option(ytdlp_adapter):
@@ -216,8 +216,8 @@ def test_download_playlist_exception(ytdlp_adapter, caplog):
         assert result.is_left()
         error_value, _ = result.monoid
         assert isinstance(error_value, DownloaderError)
-        assert f"Une erreur inattendue est survenue : {error_message}" in error_value.message
+        assert f"An unexpected error occurred: {error_message}" in error_value.message
 
         # Check logs
-        assert "Début du téléchargement de la playlist 'Test Playlist'..." in caplog.text
-        assert f"Erreur critique lors du téléchargement : {error_message}" in caplog.text
+        assert "Starting download of playlist 'Test Playlist'..." in caplog.text
+        assert f"Critical error during download: {error_message}" in caplog.text

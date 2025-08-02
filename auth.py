@@ -20,49 +20,49 @@ def get_credentials(
     creds = None
 
     if os.path.exists(token_file):
-        logger.info(f"Fichier token '{token_file}' trouvé.")
+        logger.info(f"Token file '{token_file}' found.")
         try:
             creds = Credentials.from_authorized_user_file(token_file, SCOPES)
         except Exception as e:
-            logger.error(f"Erreur lors de la lecture du fichier token : {e}")
-            return Left(AuthenticationError(f"Fichier token corrompu ou invalide : {e}"))
+            logger.error(f"Error reading token file: {e}")
+            return Left(AuthenticationError(f"Corrupt or invalid token file: {e}"))
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            logger.info("Token expiré, tentative de rafraîchissement...")
+            logger.info("Token expired, attempting refresh...")
             try:
                 creds.refresh(Request())
-                logger.info("Token rafraîchi avec succès.")
+                logger.info("Token refreshed successfully.")
             except Exception as e:
-                logger.error(f"Échec du rafraîchissement du token : {e}. Lancement du flux complet.")
+                logger.error(f"Token refresh failed: {e}. Starting full flow.")
                 creds = None
         
         if not creds:
-            logger.info("Aucun token valide trouvé, lancement du nouveau flux d'authentification.")
+            logger.info("No valid token found, starting new authentication flow.")
             if not os.path.exists(client_secrets_file):
-                logger.error(f"Fichier secrets '{client_secrets_file}' introuvable.")
+                logger.error(f"Secrets file '{client_secrets_file}' not found.")
                 return Left(
                     AuthenticationError(
-                        f"Fichier '{client_secrets_file}' introuvable. "
-                        "Veuillez le télécharger depuis la Google Cloud Console."
+                        f"File '{client_secrets_file}' not found. "
+                        "Please download it from the Google Cloud Console."
                     )
                 )
             
             try:
                 flow = InstalledAppFlow.from_client_secrets_file(client_secrets_file, SCOPES)
                 creds = flow.run_local_server(port=0)
-                logger.info("Authentification réussie via le flux local.")
+                logger.info("Authentication successful via local flow.")
             except Exception as e:
-                logger.error(f"Échec du flux d'authentification : {e}")
-                return Left(AuthenticationError(f"Échec du flux d'authentification : {e}"))
+                logger.error(f"Authentication flow failed: {e}")
+                return Left(AuthenticationError(f"Authentication flow failed: {e}"))
 
         try:
             with open(token_file, 'w') as token:
                 token.write(creds.to_json())
-            logger.info(f"Token sauvegardé dans '{token_file}'.")
+            logger.info(f"Token saved to '{token_file}'.")
         except Exception as e:
-            logger.error(f"Impossible de sauvegarder le token : {e}")
-            return Left(AuthenticationError(f"Impossible de sauvegarder le token : {e}"))
+            logger.error(f"Could not save token: {e}")
+            return Left(AuthenticationError(f"Could not save token: {e}"))
 
-    logger.info("Credentials valides obtenus.")
+    logger.info("Valid credentials obtained.")
     return Right(creds)
