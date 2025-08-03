@@ -79,13 +79,13 @@ artistes:
 
   - name: "Cheb Hasni"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=NQjxUPqgSKE"
 
   - name: "Cheb Mami"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=4aBxNH6ODc8"
       - "https://www.youtube.com/watch?v=bNC048fUqxg"
@@ -94,7 +94,7 @@ artistes:
 
   - name: "Cheb Khaled"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=bYGndvJhBuk"
       - "https://www.youtube.com/watch?v=bHd4UwJCLK0"
@@ -108,7 +108,7 @@ artistes:
 
   - name: "Cheb Bilal"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://youtu.be/6niDAI8C6ZY?si=gqSV6l7b3QftmbL4"
 
@@ -131,13 +131,13 @@ artistes:
 
   - name: "Cheb Houssem"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=AkZKeOnUuTI"
 
   - name: "Hind Ziadi"
     tunes:
-        - "https://www.youtube.com/watch?v=L9_TPWqU8Jc"
+      - "https://www.youtube.com/watch?v=L9_TPWqU8Jc"
 
   - name: "Jaylann"
     tunes:
@@ -145,7 +145,7 @@ artistes:
 
   - name: "Saad Lamjarred"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=a7Vgun2HJso"
 
@@ -159,7 +159,7 @@ artistes:
 
   - name: "Cheb Lotfi"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=Q2kDfmCNCE4"
       - "https://www.youtube.com/watch?v=TLsxaH7se3w"
@@ -167,25 +167,25 @@ artistes:
 
   - name: "Bilal Sghir"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=iuid_jkoowY"
 
   - name: "Zina Daoudia"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=yA2LAqFAqV4"
 
   - name: "Cheba Souad"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=YXlU0mPzpE8"
 
   - name: "Amine La Colombe"
     playlists:
-        - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
+      - "https://www.youtube.com/playlist?list=PLJ9kpcY21uC43gq2N2iBA6641i-2j5-0M"
     tunes:
       - "https://www.youtube.com/watch?v=FzzEaLVEr-k"
 
@@ -197,12 +197,26 @@ artistes:
     tunes:
       - "https://www.youtube.com/watch?v=w5hUR8gEbjQ"
 
-  - name : "Mantronix"
+  - name: "Mantronix"
     tunes:
       - "https://www.youtube.com/watch?v=UUU2d7L7OD8"
-  - name : "Divine Sounds"
+  - name: "Divine Sounds"
     tunes:
       - "https://www.youtube.com/watch?v=Zb3TgyF1Zbc"
+
+  - name: "Expression Direkt"
+    tunes:
+      - "https://www.youtube.com/watch?v=XqhYuLiZ58I"
+      - "https://www.youtube.com/watch?v=ct5_43F9jYE"
+
+  - name: "Keith Sweat"
+    tunes:
+      - "https://www.youtube.com/watch?v=cP4yAnbtDZE"
+      - "https://www.youtube.com/watch?v=FMar1ifzdmk"
+
+  - name: "Jodeci"
+    tunes:
+      - "https://www.youtube.com/watch?v=oYwL-FzFDKQ"
 
   - name: "Mamine"
 
@@ -217,5 +231,7 @@ artistes:
   - name: "Cheb Adjel"
 
   - name: "Cheb Lotion"
+
+
 
 
