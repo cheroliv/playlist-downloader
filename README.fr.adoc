@@ -240,9 +240,25 @@ pytest
 
 == Contribution
 
-* Respectez le TDD/LDD et la gestion d’erreurs centralisée.
-* Toute nouvelle fonctionnalité doit être couverte par des tests unitaires et d’intégration.
-* Documentez toute décision architecturale majeure dans le projet.
+Nous accueillons les contributions ! Pour garantir la qualité et la maintenabilité du code, nous adhérons aux principes suivants :
+
+* **Style Fonctionnel** : Nous privilégions les fonctions pures et l'immuabilité.
+* **TDD/LDD** : Les tests sont écrits avant le code de production. Nous validons non seulement les valeurs de retour mais aussi les logs.
+* **Typage Statique** : Nous utilisons `mypy` pour garantir la sécurité des types.
+* **Linting & Formatage** : Nous utilisons `ruff` pour maintenir un style de code cohérent.
+
+Avant de soumettre une pull request, veuillez vous assurer que votre code passe toutes les vérifications :
+
+[source,bash]
+----
+# Formater, linter et vérifier les types
+ruff format .
+ruff check .
+mypy .
+
+# Lancer les tests
+pytest
+----
 
 == Licence
 

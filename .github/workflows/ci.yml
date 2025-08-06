@@ -25,10 +25,15 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install ruff pytest pytest-mock
+
+    - name: Run Formatter Check (Ruff)
+      run: ruff format --check .
 
     - name: Run Linting (Ruff)
       run: ruff check .
+
+    - name: Run Type Checking (Mypy)
+      run: mypy .
 
     - name: Run Tests (Pytest)
       run: pytest

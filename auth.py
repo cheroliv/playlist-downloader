@@ -1,4 +1,3 @@
-
 import os
 import logging
 from pymonad.either import Left, Right
@@ -6,16 +5,15 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
-import logger_config
 from domain.errors import AuthenticationError
 
 logger = logging.getLogger(__name__)
 
-SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
+SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"]
+
 
 def get_credentials(
-    token_file: str = 'token.json',
-    client_secrets_file: str = 'client_secret.json'
+    token_file: str = "token.json", client_secrets_file: str = "client_secret.json"
 ):
     creds = None
 
@@ -36,7 +34,7 @@ def get_credentials(
             except Exception as e:
                 logger.error(f"Token refresh failed: {e}. Starting full flow.")
                 creds = None
-        
+
         if not creds:
             logger.info("No valid token found, starting new authentication flow.")
             if not os.path.exists(client_secrets_file):
@@ -47,9 +45,11 @@ def get_credentials(
                         "Please download it from the Google Cloud Console."
                     )
                 )
-            
+
             try:
-                flow = InstalledAppFlow.from_client_secrets_file(client_secrets_file, SCOPES)
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    client_secrets_file, SCOPES
+                )
                 creds = flow.run_local_server(port=0)
                 logger.info("Authentication successful via local flow.")
             except Exception as e:
@@ -57,7 +57,7 @@ def get_credentials(
                 return Left(AuthenticationError(f"Authentication flow failed: {e}"))
 
         try:
-            with open(token_file, 'w') as token:
+            with open(token_file, "w") as token:
                 token.write(creds.to_json())
             logger.info(f"Token saved to '{token_file}'.")
         except Exception as e:

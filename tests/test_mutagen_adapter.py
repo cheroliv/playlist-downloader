@@ -2,17 +2,19 @@ import pytest
 from unittest.mock import patch, MagicMock
 from pathlib import Path
 
-from mutagen.id3 import ID3, COMM, ID3NoHeaderError
+from mutagen.id3 import ID3NoHeaderError
 from adapters.mutagen_adapter import MutagenAdapter
 from logger_config import setup_logger
 
 # Setup logger for tests
 setup_logger()
 
+
 @pytest.fixture
 def mutagen_adapter():
     """Provides a MutagenAdapter instance."""
     return MutagenAdapter()
+
 
 def test_get_comment_file_not_found(mutagen_adapter, caplog):
     """
@@ -25,8 +27,9 @@ def test_get_comment_file_not_found(mutagen_adapter, caplog):
     assert result is None
     assert "Error" not in caplog.text
 
-@patch('pathlib.Path.exists', return_value=True)
-@patch('adapters.mutagen_adapter.ID3')
+
+@patch("pathlib.Path.exists", return_value=True)
+@patch("adapters.mutagen_adapter.ID3")
 def test_get_comment_success(mock_id3_class, mock_exists, mutagen_adapter):
     """
     Given a valid MP3 file with a comment,
@@ -37,15 +40,16 @@ def test_get_comment_success(mock_id3_class, mock_exists, mutagen_adapter):
     mock_audio_instance = MagicMock()
     mock_audio_instance.getall.return_value = [MagicMock(text=["Test Comment"])]
     mock_id3_class.return_value = mock_audio_instance
-    
+
     result = mutagen_adapter.get_comment(Path("fake.mp3"))
 
     assert result == "Test Comment"
     mock_id3_class.assert_called_once_with(Path("fake.mp3"))
-    mock_audio_instance.getall.assert_called_once_with('COMM')
+    mock_audio_instance.getall.assert_called_once_with("COMM")
 
-@patch('pathlib.Path.exists', return_value=True)
-@patch('adapters.mutagen_adapter.ID3')
+
+@patch("pathlib.Path.exists", return_value=True)
+@patch("adapters.mutagen_adapter.ID3")
 def test_get_comment_no_comment_frame(mock_id3_class, mock_exists, mutagen_adapter):
     """
     Given an MP3 file without a comment frame,
@@ -60,9 +64,12 @@ def test_get_comment_no_comment_frame(mock_id3_class, mock_exists, mutagen_adapt
 
     assert result is None
 
-@patch('pathlib.Path.exists', return_value=True)
-@patch('adapters.mutagen_adapter.ID3', side_effect=ID3NoHeaderError("No ID3 header"))
-def test_get_comment_no_id3_header(mock_id3_class, mock_exists, mutagen_adapter, caplog):
+
+@patch("pathlib.Path.exists", return_value=True)
+@patch("adapters.mutagen_adapter.ID3", side_effect=ID3NoHeaderError("No ID3 header"))
+def test_get_comment_no_id3_header(
+    mock_id3_class, mock_exists, mutagen_adapter, caplog
+):
     """
     Given a file without an ID3 header,
     When get_comment is called,
@@ -73,9 +80,12 @@ def test_get_comment_no_id3_header(mock_id3_class, mock_exists, mutagen_adapter,
     assert result is None
     assert "does not have an ID3 header" in caplog.text
 
-@patch('pathlib.Path.exists', return_value=True)
-@patch('adapters.mutagen_adapter.ID3', side_effect=Exception("Generic Mutagen Error"))
-def test_get_comment_generic_exception(mock_id3_class, mock_exists, mutagen_adapter, caplog):
+
+@patch("pathlib.Path.exists", return_value=True)
+@patch("adapters.mutagen_adapter.ID3", side_effect=Exception("Generic Mutagen Error"))
+def test_get_comment_generic_exception(
+    mock_id3_class, mock_exists, mutagen_adapter, caplog
+):
     """
     Given a file that causes a generic exception in Mutagen,
     When get_comment is called,

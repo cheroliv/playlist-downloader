@@ -46,7 +46,7 @@ MESSAGES = {
         "starting_deletion": "Starting deletion...",
         "file_deleted": "Deleted: {name}",
         "file_deletion_error": "Failed to delete {name}: {error}",
-        "sync_completed": "Synchronization complete"
+        "sync_completed": "Synchronization complete",
     },
     "fr": {
         "playlist_created": "Playlist '{playlist_name}' créée avec succès. URL : {playlist_url}",
@@ -92,11 +92,12 @@ MESSAGES = {
         "starting_deletion": "Démarrage de la suppression...",
         "file_deleted": "Supprimé : {name}",
         "file_deletion_error": "Échec de la suppression de {name} : {error}",
-        "sync_completed": "Synchronisation terminée"
-    }
+        "sync_completed": "Synchronisation terminée",
+    },
 }
 
 _current_lang = "en"
+
 
 def get_default_lang():
     try:
@@ -111,23 +112,26 @@ def get_default_lang():
     except (ValueError, TypeError):
         return "en"
 
+
 def set_lang(lang: str):
     global _current_lang
     _current_lang = lang if lang in MESSAGES else "en"
+
 
 def get_message(key, **kwargs):
     lang = _current_lang
     if lang not in MESSAGES or key not in MESSAGES[lang]:
         # Fallback to English if key not found in current language
         lang = "en"
-    
+
     message_template = MESSAGES[lang].get(key, f"Translation missing for key: {key}")
-    
+
     try:
         return message_template.format(**kwargs)
     except KeyError as e:
         # This can happen if a placeholder is missing in kwargs
         return f"Formatting error for key '{key}': missing placeholder {e}"
+
 
 # Initialize with default system language
 set_lang(get_default_lang())

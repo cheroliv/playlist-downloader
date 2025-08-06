@@ -1,14 +1,17 @@
-typer[all]
+typer
 pymonad>=2.4.0
 yt-dlp
 google-api-python-client
 google-auth-oauthlib
 PyYAML
+types-PyYAML
 
 # --- Dépendances de développement et de test ---
 pytest
 pytest-mock
 ruff
+mypy
+toolz
 setuptools
 wheel
 twine

@@ -9,7 +9,9 @@ class MusicDownloader(ABC):
     """
 
     @abstractmethod
-    def download_playlist(self, playlist: Playlist, destination: str) -> Either[str, str]:
+    def download_playlist(
+        self, playlist: Playlist, destination: str
+    ) -> Either[str, str]:
         """
         Takes a playlist and a destination and downloads it.
 

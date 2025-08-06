@@ -242,9 +242,25 @@ pytest
 
 == Contribution
 
-* Respect TDD/LDD and centralized error handling.
-* Any new feature must be covered by unit and integration tests.
-* Document any major architectural decisions in the project.
+We welcome contributions! To ensure code quality and maintainability, we adhere to the following principles:
+
+* **Functional Style**: We favor pure functions and immutability.
+* **TDD/LDD**: Tests are written before production code. We validate not only return values but also logs.
+* **Static Typing**: We use `mypy` to ensure type safety.
+* **Linting & Formatting**: We use `ruff` to maintain a consistent code style.
+
+Before submitting a pull request, please ensure your code passes all checks:
+
+[source,bash]
+----
+# Format, lint, and type-check
+ruff format .
+ruff check .
+mypy .
+
+# Run tests
+pytest
+----
 
 == License
 
