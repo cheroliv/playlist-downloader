@@ -50,18 +50,21 @@ artists:
     # 1 call for the playlist, 1 call for the tune
     assert mock_youtube_dl.download.call_count == 2
 
-@patch('pathlib.Path.exists', return_value=True)
-def test_import_yaml_skips_existing_with_green_flag(mock_exists, tmp_path, mock_youtube_dl):
+@patch('adapters.ytdlp_adapter.YTDLPAdapter._is_tune_already_present', return_value=True)
+def test_import_yaml_skips_existing_with_green_flag(mock_is_present, tmp_path, mock_youtube_dl):
     """Checks that existing files are skipped in YAML mode with --green flag."""
     yaml_content = 'artists:\n  - name: "Test Artist"\n    tunes: ["https://tune1"]'
     config_file = tmp_path / "config.yml"
     config_file.write_text(yaml_content)
-    
+
     result = runner.invoke(app, ["--lang", "en", "import", str(config_file), "--output-dir", str(tmp_path), "--green"])
-    
+
     assert result.exit_code == 0, result.stdout
     assert "already exists" in result.stdout
     mock_youtube_dl.download.assert_not_called()
+    # The destination path includes the artist's name as a subfolder
+    mock_is_present.assert_called_once_with("https://tune1", str(tmp_path / "Test Artist"))
+
 
 def test_import_yaml_invalid_file(tmp_path):
     """Checks handling of an invalid YAML file."""
@@ -102,13 +105,15 @@ def test_import_cli_multiple_sources(tmp_path, mock_youtube_dl):
     # 1 call for tune1, 1 for playlist1, 1 for tune2
     assert mock_youtube_dl.download.call_count == 3
 
-@patch('pathlib.Path.exists', return_value=True)
-def test_import_cli_skips_existing_with_green_flag(mock_exists, tmp_path, mock_youtube_dl):
+@patch('adapters.ytdlp_adapter.YTDLPAdapter._is_tune_already_present', return_value=True)
+def test_import_cli_skips_existing_with_green_flag(mock_is_present, tmp_path, mock_youtube_dl):
     """Checks that existing files are skipped in CLI mode with --green."""
     result = runner.invoke(app, ["--lang", "en", "import", "--tune", "https://tune1", "--output-dir", str(tmp_path), "--green"])
     assert result.exit_code == 0, result.stdout
     assert "already exists" in result.stdout
     mock_youtube_dl.download.assert_not_called()
+    mock_is_present.assert_called_once_with("https://tune1", str(tmp_path))
+
 
 # --- General Tests ---
 

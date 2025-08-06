@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 from pymonad.either import Left, Right, Either
 
+from adapters.mutagen_adapter import MutagenAdapter
 from domain.models import Playlist
 from domain.ports import MusicDownloader
 from domain.errors import DownloaderError
@@ -12,6 +13,21 @@ logger = logging.getLogger(__name__)
 
 
 class YTDLPAdapter(MusicDownloader):
+    def __init__(self, mutagen_adapter: MutagenAdapter = MutagenAdapter()):
+        self._mutagen_adapter = mutagen_adapter
+
+    def _is_tune_already_present(self, tune_url: str, destination: str) -> bool:
+        """Checks if a tune with the same URL is already in the destination."""
+        dest_path = Path(destination)
+        if not dest_path.is_dir():
+            return False
+
+        for file_path in dest_path.glob('*.mp3'):
+            existing_url = self._mutagen_adapter.get_comment(file_path)
+            if existing_url and existing_url.strip() == tune_url.strip():
+                return True
+        return False
+
     def _get_ydl_opts(self, destination: str, quality: str, no_overwrites: bool, is_playlist: bool):
         """Creates the base options for yt-dlp."""
         audio_quality = '0' if quality == 'best' else quality
@@ -22,6 +38,16 @@ class YTDLPAdapter(MusicDownloader):
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
                 'preferredquality': audio_quality,
+            }, {
+                'key': 'EmbedThumbnail',
+            }, {
+                'key': 'FFmpegMetadata',
+                'add_metadata': True,
+            }, {
+                'key': 'ModifyTags',
+                'tags': {
+                    'comment': '%(webpage_url)s'
+                }
             }],
             'ignoreerrors': True,
             'verbose': False,
@@ -32,31 +58,29 @@ class YTDLPAdapter(MusicDownloader):
     def download_tune(self, tune_url: str, destination: str, quality: str = "192", green: bool = False) -> Either[DownloaderError, str]:
         """
         Downloads a single audio track from a YouTube URL.
-        If green is True, it checks if the file exists before downloading.
+        If green is True, it checks if a file with the same source URL exists before downloading.
         """
         logger.info(f"Attempting to download tune: {tune_url}")
-        
+
         try:
-            # 1. Get video info without downloading
+            # 1. Check if file exists if green mode is on
+            if green and self._is_tune_already_present(tune_url, destination):
+                message = f"Track from URL '{tune_url}' already exists. Skipping download."
+                logger.info(message)
+                return Right(message)
+
+            # 2. Get video info for download
             with yt_dlp.YoutubeDL({'quiet': True, 'no_warnings': True}) as ydl:
                 info = ydl.extract_info(tune_url, download=False)
                 title = info.get('title', 'unknown_title')
                 video_id = info.get('id', 'unknown_id')
-                # Clean title for file path
-                safe_title = re.sub(r'[^\w\s-]', '', title).strip()
-                expected_file = Path(destination) / f"{safe_title}.mp3"
-
-            # 2. Check if file exists if green mode is on
-            if green and expected_file.exists():
-                message = f"Track '{title}' already exists. Skipping download."
-                logger.info(message)
-                return Right(message)
 
             # 3. Download the tune
-            ydl_opts = self._get_ydl_opts(destination, quality, green, is_playlist=False)
-            
+            # We set no_overwrites to False here because our green check is now metadata-based.
+            # The original check was filename-based, which is less reliable.
+            ydl_opts = self._get_ydl_opts(destination, quality, no_overwrites=False, is_playlist=False)
+
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                # We use the specific video_id to avoid playlist downloads
                 result_code = ydl.download([f"https://www.youtube.com/watch?v={video_id}"])
 
             if result_code == 0:
@@ -72,6 +96,7 @@ class YTDLPAdapter(MusicDownloader):
             error_message = f"An unexpected error occurred: {e}"
             logger.critical(f"Critical error during download: {e}", exc_info=True)
             return Left(DownloaderError(error_message))
+
 
     def download_playlist(self, playlist: Playlist, destination: str, quality: str = "192", green: bool = False) -> Either[DownloaderError, str]:
         """

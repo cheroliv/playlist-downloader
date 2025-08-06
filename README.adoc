@@ -95,7 +95,7 @@ Downloads all tracks from a playlist in MP3 format.
 playlist-downloader download "PLAYLIST_URL" -o "my_folder" -q "best" --green
 ----
 
-The `--green` option prevents re-downloading a track if it is already present in the destination folder.
+The `--green` option prevents re-downloading a track if a file with the same source URL is already present in the destination folder (based on metadata).
 
 === `update`
 

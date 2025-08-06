@@ -93,7 +93,7 @@ Télécharge tous les morceaux d'une playlist au format MP3.
 playlist-downloader download "URL_DE_LA_PLAYLIST" -o "mon_dossier" -q "best" --green
 ----
 
-L'option `--green` permet de ne pas re-télécharger un morceau s'il est déjà présent dans le dossier de destination.
+L'option `--green` permet de ne pas re-télécharger un morceau si un fichier avec la même URL source est déjà présent dans le dossier de destination (vérification basée sur les métadonnées).
 
 === `update`
 

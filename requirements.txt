@@ -12,3 +12,4 @@ ruff
 setuptools
 wheel
 twine
+mutagen
