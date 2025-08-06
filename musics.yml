@@ -218,6 +218,10 @@ artistes:
     tunes:
       - "https://www.youtube.com/watch?v=oYwL-FzFDKQ"
 
+  - name: "cheroliv"
+    playlists:
+        - "https://www.youtube.com/playlist?list=PLfcdIrSe7Q1XDL_3QXxtzDs6BW8UUM-bi"
+
   - name: "Mamine"
 
   - name: "Hichem Smati"
