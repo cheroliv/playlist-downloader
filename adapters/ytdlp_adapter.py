@@ -51,7 +51,7 @@ class YTDLPAdapter(MusicDownloader):
                 {"key": "ModifyTags", "tags": {"comment": "%(webpage_url)s"}},
             ],
             "ignoreerrors": True,
-            "verbose": False,
+            "verbose": True, # Changed to True for debugging
             "no_overwrites": no_overwrites,
             "noplaylist": not is_playlist,
         }
@@ -67,12 +67,13 @@ class YTDLPAdapter(MusicDownloader):
 
         try:
             # 1. Check if file exists if green mode is on
-            if green and self._is_tune_already_present(tune_url, destination):
-                message = (
-                    f"Track from URL '{tune_url}' already exists. Skipping download."
-                )
-                logger.info(message)
-                return Right(message)
+            # Temporarily disabled for debugging
+            # if green and self._is_tune_already_present(tune_url, destination):
+            #     message = (
+            #         f"Track from URL '{tune_url}' already exists. Skipping download."
+            #     )
+            #     logger.info(message)
+            #     return Right(message)
 
             # 2. Get video info for download
             with yt_dlp.YoutubeDL({"quiet": True, "no_warnings": True}) as ydl:
@@ -122,7 +123,7 @@ class YTDLPAdapter(MusicDownloader):
         """
         logger.info(f"Starting download of playlist '{playlist.title}'...")
 
-        ydl_opts = self._get_ydl_opts(destination, quality, green, is_playlist=True)
+        ydl_opts = self._get_ydl_opts(destination, quality, no_overwrites=False, is_playlist=True)
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
