@@ -1,0 +1,36 @@
+@startuml
+!pragma layout smetana
+
+package "playlist_downloader" {
+
+    package "domain" {
+        package "errors" <<Folder>>
+        package "models" <<Folder>>
+        package "ports" <<Folder>>
+    }
+
+    package "adapters" <<Folder>>
+
+    package "cli_core" {
+        "auth.py" as AuthFile
+        "youtube_api.py" as YouTubeAPIFile
+        "cli.py" as CLIFile
+        "i18n.py" as I18nFile
+        "logger_config.py" as LoggerConfigFile
+    }
+
+    CLIFile .up.> AuthFile : uses
+    CLIFile .up.> YouTubeAPIFile : uses
+    CLIFile .up.> I18nFile : uses
+    CLIFile .up.> adapters : uses
+    CLIFile .up.> domain.errors : uses
+    CLIFile .up.> domain.models : uses
+
+    AuthFile .right.> domain.errors : returns
+    YouTubeAPIFile .right.> domain.errors : returns
+    adapters .right.> domain.errors : returns
+    adapters .right.> domain.models : uses
+    domain.ports .right.> domain.models : uses
+}
+
+@enduml

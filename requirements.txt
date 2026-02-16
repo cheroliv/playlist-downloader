@@ -8,6 +8,7 @@ types-PyYAML
 
 # --- Dépendances de développement et de test ---
 pytest
+behave
 pytest-mock
 ruff
 mypy

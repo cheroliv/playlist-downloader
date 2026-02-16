@@ -1,0 +1,103 @@
+@startuml
+!pragma layout smetana
+
+package "domain" {
+    package "errors" {
+        class AppError << (E,red) Base Error >> {
+            message: str
+        }
+        class AuthenticationError << (E,red) >>
+        class YouTubeApiError << (E,red) >>
+        class DownloaderError << (E,red) >>
+
+        AuthenticationError --|> AppError
+        YouTubeApiError --|> AppError
+        DownloaderError --|> AppError
+    }
+
+    package "models" {
+        class Playlist << (D,orchid) Data Class >> {
+            playlist_id: str
+            title: str
+            url: str
+        }
+        class DownloadTask << (D,orchid) Data Class >> {
+            playlist_url: str
+            output_path: str
+        }
+    }
+
+    package "ports" {
+        interface MusicDownloader << (P,orange) Port >> {
+            + download_playlist(playlist: Playlist, destination: str): Either<str, str>
+        }
+    }
+}
+
+package "adapters" {
+    class MutagenAdapter << (A,yellowgreen) Adapter >> {
+        + get_comment(file_path: Path): Optional[str]
+    }
+
+    class YTDLPAdapter << (A,yellowgreen) Adapter >> {
+        - _mutagen_adapter: MutagenAdapter
+        --
+        + __init__(mutagen_adapter: MutagenAdapter)
+        - _is_tune_already_present(tune_url: str, destination: str): bool
+        - _get_ydl_opts(...): dict
+        + download_tune(tune_url: str, destination: str, quality: str, green: bool): Either<DownloaderError, str>
+        + download_playlist(playlist: Playlist, destination: str, quality: str, green: bool): Either<DownloaderError, str>
+    }
+
+    YTDLPAdapter o-- MutagenAdapter : uses
+    YTDLPAdapter ..|> MusicDownloader
+}
+
+class Auth {
+    + get_credentials(token_file: str, client_secrets_file: str): Either<AuthenticationError, Credentials>
+}
+
+class YouTubeAPI {
+    + create_playlist(credentials, title: str, description: str, private: bool): Either<YouTubeApiError, str>
+    + delete_playlist(credentials, playlist_id: str): Either<YouTubeApiError, str>
+    + get_playlist_url(credentials, playlist_id: str): Either<YouTubeApiError, str>
+}
+
+class CLI {
+    + app: Typer
+    + main_callback(lang: Optional[str])
+    - _handle_error(error: AppError)
+    - _handle_auth_flow(): Either<AppError, Any>
+    + create_playlist(...)
+    + download_playlist(...)
+    + update_playlist(...)
+    + delete_playlist(...)
+    + share_playlist(...)
+    + import_tunes(...)
+}
+
+class I18n {
+    + get_default_lang(): str
+    + set_lang(lang: str)
+    + get_message(key: str, **kwargs): str
+}
+
+class LoggerConfig {
+    + setup_logger()
+}
+
+CLI .up.> Auth : uses
+CLI .up.> YouTubeAPI : uses
+CLI .up.> I18n : uses
+CLI .up.> YTDLPAdapter : uses
+CLI .up.> AppError : uses
+CLI .up.> Playlist : uses
+CLI .up.> DownloaderError : uses
+
+Auth .right.> AuthenticationError : returns
+YouTubeAPI .right.> YouTubeApiError : returns
+YTDLPAdapter .right.> DownloaderError : returns
+YTDLPAdapter .right.> Playlist : uses
+MusicDownloader .right.> Playlist : uses
+
+@enduml
