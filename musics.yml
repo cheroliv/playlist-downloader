@@ -1,76 +1,282 @@
 artistes:
+  - name: "Mr Draganov"
+    playlists:
+      - "https://www.youtube.com/watch?v=EGq-WujF5WQ&list=RDEMpWDSwtI727ajh3pjgSW67g&start_radio=1"
+  - name: "Tagne"
+    playlists:
+      - "https://www.youtube.com/playlist?list=PLmcU58nEHjznZ6nI7A9mB0zRbcNtM10jy"
+  - name: "Balti"
+    playlists:
+      - "https://www.youtube.com/watch?v=tS8nzAQg_8k&list=RDEMfdNrJNTujDlaR7Z8PXrPpg&start_radio=1"
+  - name: "El Grande Toto"
+    playlists:
+      - "https://www.youtube.com/watch?v=IABtAdP1Qp8&list=RDEMBoh7Hmg2XyQ-UJkQA74w6g&start_radio=1"
+
+  - name: "Mimoun El Oujdi"
+    playlists:
+      - "https://www.youtube.com/watch?v=lrF-kMg55qw&list=RDEM73gw5aNTtOVr0QGSk0Vm6g&start_radio=1"
+
+  - name: "Cheb Babia"
+    playlists:
+      - "https://www.youtube.com/watch?v=9z7pQTCvN7E&list=RDEMQLxdxbt5ssWGX4-gJ_3mIw&start_radio=1"
+
+  - name: "TAKTOUKA REMIX"
+    tunes:
+      - "https://www.youtube.com/watch?v=T1EpmaF0jhc"
+      - "https://www.youtube.com/watch?v=M4NnBBk4vHY"
+    playlists:
+      - "https://www.youtube.com/watch?v=ALBl44ih18E&list=PL7Cha2YXAK6T8RK2XXz4bpYwzHo2mp8XJ"
+
+  - name: "Yasman music"
+    tunes:
+      - "https://www.youtube.com/watch?v=JQwJAaA1HRw"
+
+  - name: "Frères Bouchnak"
+    playlists:
+      - "https://www.youtube.com/watch?v=Kqu2dIGQRHE&list=PLkV3ztukGcbJVVn9ISihXTOKAaNTymZJZ"
+
+  - name: "Mohamed Bousmaha"
+    tunes:
+      - "https://www.youtube.com/watch?v=FzzEaLVEr-k"
+
   - name: "Cheb Nadir"
     playlists:
       - "https://www.youtube.com/watch?v=-5rs4IarrAE&list=PL_klhD1YeZ05AKm8K12xZU5Df-sKvk8YY"
+
   - name: "Cheb Bello"
+    tunes:
+      - "https://www.youtube.com/watch?v=80B2gIoU1H0"
+      - "https://www.youtube.com/watch?v=x6UkXE2SV90"
+      - "https://www.youtube.com/watch?v=AOMaIGpBp-o"
     playlists:
       - "https://www.youtube.com/watch?v=u81C6NASQ-Q&list=RDEMJR9zAbDDzeAWIj4eotDRDQ&start_radio=1"
-  - name: "Bilal Sghir"
-    playlists:
-      - "https://www.youtube.com/watch?v=5V0K5TWJ0YY&list=RDEM1fNix6mkVZI7AVyhoQzkCg&start_radio=1"
-  - name: "Cheb Midou"
-    playlists:
-      - "https://www.youtube.com/watch?v=mwnfRWSYsYE&list=RDEM4YsxhqL7kKOrQre2s5nGzg&start_radio=1"
+
   - name: "Cheb Lotfi"
     playlists:
       - "https://www.youtube.com/watch?v=7_cv3sOC28I&list=PLwHh_R-V7CCjvEhMuTo3lHMYgIhteFhs0"
-  - name: "Silya Ziani"
-    playlists:
-      - "https://www.youtube.com/watch?v=-zR1VLkncj8&list=RDEMC6MzRayF0CW4QaDp8AZBOw&start_radio=1"
-  - name: "Rachid Kasmi"
-    playlists:
-      - "https://www.youtube.com/watch?v=a_OCNYlOu24&list=RDEMQuedLvncw8PYIOZsIDM9gA&start_radio=1"
-  - name: "Cheb Zehouani"
-    playlists:
-      - "https://www.youtube.com/watch?v=kNTu8k7Rrg8&list=RDEM4TW7oMSY7SXnJlEA7mKoeg&start_radio=1"
-  - name: "Bilel Tachini"
-    playlists:
-      - "https://www.youtube.com/watch?v=UQpgU6SUXJU&list=RDEMhZ6Oy2MMZavrtslLaitfhQ&start_radio=1"
-  - name: "Cheba Zahouania"
-    playlists:
-      - "https://www.youtube.com/watch?v=oQgX-fQfMJE&list=RDEMMvRQDTNKKKYlCqxWPBtY2A&start_radio=1"
+    tunes:
+      - "https://www.youtube.com/watch?v=Q2kDfmCNCE4"
+      - "https://www.youtube.com/watch?v=TLsxaH7se3w"
+      - "https://www.youtube.com/watch?v=znK94Ozuye8"
+
   - name: "Djamel Sghir"
-    playlists:
-      - "https://www.youtube.com/watch?v=RtjRazd1zVY&list=OLAK5uy_lUaJ9mohowixPTKV-fvnTydJzMmssj-4U"
-
-  - name: "Cheb Mimou"
-    playlists:
-      - "https://www.youtube.com/watch?v=fIPQYQJjVmM&list=RDEMKfe_HkGUnGVsBDsHEhhEyg&start_radio=1"
-
-  - name: "Cheb Hasni"
-    playlists:
-      - "https://www.youtube.com/watch?v=NQjxUPqgSKE&list=RDEMlVEieg9F2qg5_K4vWvQqtQ&start_radio=1"
+    tunes:
+      - "https://www.youtube.com/watch?v=SXSvwSGfbNE"
+      - "https://www.youtube.com/watch?v=hgJxCHEK2mA"
 
   - name: "Cheb Mami"
     playlists:
       - "https://www.youtube.com/watch?v=4Lk6b-1HR1o&list=PLehZ-vuP969TCvgy1Nf0YkMmMqxALxDCp"
+    tunes:
+      - "https://www.youtube.com/watch?v=4aBxNH6ODc8"
+      - "https://www.youtube.com/watch?v=bNC048fUqxg"
+      - "https://www.youtube.com/watch?v=GSXHtJ4gc3g"
+
+  - name: "Bilel Tachini"
+    tunes:
+      - "https://www.youtube.com/watch?v=tnKgcFAV3ug"
+      - "https://www.youtube.com/watch?v=YBETWFkzTtM"
+      - "https://www.youtube.com/watch?v=6-UOmjw9viQ"
+      - "https://www.youtube.com/watch?v=bYGndvJhBuk"
+      - "https://www.youtube.com/watch?v=Gk0j9B6zqtY"
+    playlists:
+      - "https://www.youtube.com/watch?v=UQpgU6SUXJU&list=RDEMhZ6Oy2MMZavrtslLaitfhQ&start_radio=1"
+
+  - name: "Ayman Serhani"
+    tunes:
+      - "https://www.youtube.com/watch?v=7K_SpSf4Mhk"
+      - "https://www.youtube.com/watch?v=FgAbqk-dL8s"
+      - "https://www.youtube.com/watch?v=YTINAQoU4oo"
+      - "https://www.youtube.com/watch?v=8MMV1qvWrOI"
+      - "https://www.youtube.com/watch?v=xKloph88xzM"
+      - "https://www.youtube.com/watch?v=Tf0xzIeQp2g"
+      - "https://www.youtube.com/watch?v=xZy_61Aq2BI"
+      - "https://www.youtube.com/watch?v=u_nX4oH6U6M"
+      - "https://www.youtube.com/watch?v=SwDxpGz78Pc"
+      - "https://www.youtube.com/watch?v=_OONwXD1kus"
+
+  - name: "TiiwTiiw"
+    tunes:
+      - "https://www.youtube.com/watch?v=f8NapGGtMvo"
+      - "https://www.youtube.com/watch?v=keHEsFPBlTk"
+      - "https://www.youtube.com/watch?v=LZLfW4kuJbQ"
+      - "https://www.youtube.com/watch?v=PRXSJV021pM"
+      - "https://www.youtube.com/watch?v=ymzaj1IuGnM"
+      - "https://www.youtube.com/watch?v=J-6VB2-9H6k"
+      - "https://www.youtube.com/watch?v=pYhypDoF_3k"
+      - "https://www.youtube.com/watch?v=fWVM_Ynwy4o"
+
+  - name: "Cheikha Rimitti"
+    tunes:
+      - "https://www.youtube.com/watch?v=buAP0eU5R3I"
+      - "https://www.youtube.com/watch?v=pCPB6WD87Yw"
+
+  - name: "Talbi One"
+    tunes:
+      - "https://www.youtube.com/watch?v=lCaHvRio3As"
+
+  - name: "Cheba Zohra"
+    tunes:
+      - "https://www.youtube.com/watch?v=xzUO5Voxpzk"
+      - "https://www.youtube.com/watch?v=0unenq8HDeg"
+
+  - name: "Cheba Zahouania"
+    tunes:
+      - "https://www.youtube.com/watch?v=kr2g1Lqvnfw"
+      - "https://www.youtube.com/watch?v=fCcwJ_e7vm4"
+      - "https://www.youtube.com/watch?v=qotSx_1NaX4"
+      - "https://www.youtube.com/watch?v=AShuKSFPjy0"
+    playlists:
+      - "https://www.youtube.com/watch?v=oQgX-fQfMJE&list=RDEMMvRQDTNKKKYlCqxWPBtY2A&start_radio=1"
+
+  - name: "Cheb Mimou"
+    tunes:
+      - "https://www.youtube.com/watch?v=9c3tN6flADE"
+    playlists:
+      - "https://www.youtube.com/watch?v=fIPQYQJjVmM&list=RDEMKfe_HkGUnGVsBDsHEhhEyg&start_radio=1"
+
+  - name: "Cheb Hasni"
+    tunes:
+      - "https://www.youtube.com/watch?v=NQjxUPqgSKE"
+    playlists:
+      - "https://www.youtube.com/watch?v=NQjxUPqgSKE&list=RDEMlVEieg9F2qg5_K4vWvQqtQ&start_radio=1"
 
   - name: "Cheb Khaled"
     playlists:
       - "https://www.youtube.com/watch?v=5dWeeUIZFgA&list=RDEMtbC_BXEtvKp9p_L81bzVwA&start_radio=1"
-
-  - name: "Amine La Colombe"
     tunes:
-      - "https://www.youtube.com/watch?v=FzzEaLVEr-k"
+      - "https://www.youtube.com/watch?v=bYGndvJhBuk"
+      - "https://www.youtube.com/watch?v=bHd4UwJCLK0"
+      - "https://www.youtube.com/watch?v=FWFkals_uMo"
+
+  - name: "Chebba Maria"
+    tunes:
+      - "https://www.youtube.com/watch?v=E-pMg6100g0"
+      - "https://www.youtube.com/watch?v=Zef4HsGb474"
+
+  - name: "Cheb Bilal"
+    tunes:
+      - "https://youtu.be/6niDAI8C6ZY?si=gqSV6l7b3QftmbL4"
+
+  - name: "Mirou Hichem TGV"
+    tunes:
+      - "https://www.youtube.com/watch?v=LB-MlOlJIVc"
+
+  - name: "Chebba Warda"
+    tunes:
+      - "https://www.youtube.com/watch?v=uLojrsxoVbk"
+      - "https://www.youtube.com/watch?v=fqh-tEoorqo"
+
+  - name: "Othmane Boulboul"
+    tunes:
+      - "https://www.youtube.com/watch?v=T5iVqIhnleQ"
+
+  - name: "Cheb Fatah Sghir"
+    tunes:
+      - "https://www.youtube.com/watch?v=XpjzxTzsSew"
+
+  - name: "Cheb Houssem"
+    tunes:
+      - "https://www.youtube.com/watch?v=AkZKeOnUuTI"
+
+  - name: "Hind Ziadi"
+    tunes:
+      - "https://www.youtube.com/watch?v=L9_TPWqU8Jc"
+
+  - name: "Jaylann"
+    tunes:
+      - "https://www.youtube.com/watch?v=gXAnRuVlAvk"
+
+  - name: "Saad Lamjarred"
+    tunes:
+      - "https://www.youtube.com/watch?v=a7Vgun2HJso"
+
+  - name: "Salim Cravata"
+    tunes:
+      - "https://www.youtube.com/watch?v=IhS20z1VTG8"
+
+  - name: "Nouaman Belaiachi"
+    tunes:
+      - "https://www.youtube.com/watch?v=KrluG8BTGBE"
+
+  - name: "Bilal Sghir"
+    tunes:
+      - "https://www.youtube.com/watch?v=iuid_jkoowY"
+    playlists:
+      - "https://www.youtube.com/watch?v=5V0K5TWJ0YY&list=RDEM1fNix6mkVZI7AVyhoQzkCg&start_radio=1"
+  - name: "Zina Daoudia"
+    tunes:
+      - "https://www.youtube.com/watch?v=yA2LAqFAqV4"
+
+  - name: "Cheba Souad"
+    tunes:
+      - "https://www.youtube.com/watch?v=YXlU0mPzpE8"
+
+  - name: "Cheb Mohamed El Sghir"
+    tunes:
+      - "https://www.youtube.com/watch?v=8kTqRl50nLM"
 
   - name: "Cheb Omar"
+    tunes:
+      - "https://www.youtube.com/watch?v=w5hUR8gEbjQ"
     playlists:
       - "https://www.youtube.com/watch?v=SOV6F_AXzRI&list=RDEMkdRT82xA368-J0oQtZ063A&start_radio=1"
 
-#  - name: "Mamine"
-#
-#  - name: "Hichem Smati"
-#
-#  - name: "Djalil"
-#
-#  - name: "Bilal Babylo"
-#
-#  - name: "Kader Japonais"
-#
-#  - name: "Cheb Adjel"
-#
-#  - name: "Cheb Lotion"
+  - name: "Cheb Midou"
+    playlists:
+      - "https://www.youtube.com/watch?v=mwnfRWSYsYE&list=RDEM4YsxhqL7kKOrQre2s5nGzg&start_radio=1"
 
+  - name: "Silya Ziani"
+    playlists:
+      - "https://www.youtube.com/watch?v=-zR1VLkncj8&list=RDEMC6MzRayF0CW4QaDp8AZBOw&start_radio=1"
 
+  - name: "Rachid Kasmi"
+    playlists:
+      - "https://www.youtube.com/watch?v=a_OCNYlOu24&list=RDEMQuedLvncw8PYIOZsIDM9gA&start_radio=1"
 
+  - name: "Cheb Zehouani"
+    playlists:
+      - "https://www.youtube.com/watch?v=kNTu8k7Rrg8&list=RDEM4TW7oMSY7SXnJlEA7mKoeg&start_radio=1"
+
+  - name: "Mamine"
+    playlists:
+      - "https://www.youtube.com/watch?v=02-szY3whM0&list=OLAK5uy_luiHbRzsEuiSa3zPDlPdnjXGjuiDP_kDw"
+      - "https://www.youtube.com/watch?v=oY8j_Pc7_AQ&list=OLAK5uy_nDtMtXrbd-oei38Oe4k6682Y1RK96WpH0"
+      - "https://www.youtube.com/watch?v=hn6ASDlsSe4&list=OLAK5uy_ltHdojA4pEssahespgmn9MmhOxrP7Ld9A"
+      - "https://www.youtube.com/watch?v=TT5q9zaBlKQ&list=OLAK5uy_n05_I0AtaRNhHT6e7qBmMhpdjTKJQTrW4"
+      - "https://www.youtube.com/watch?v=8FP7VSJ9pYE&list=OLAK5uy_kOKmG_A86efRzIgauehHNLRUG2f5dRi9Y"
+      - "https://www.youtube.com/watch?v=unihlpASaHg&list=OLAK5uy_kqtfbz7Cn9DHcofIbrXFI1P4z2nVFXvqk"
+      - "https://www.youtube.com/watch?v=Fy9JVTnAwS4&list=OLAK5uy_mCWVKbePJOiOHt4wDbuwc0HaK8U1EJbyA"
+      - "https://www.youtube.com/watch?v=U0ghAu3ELMU&list=OLAK5uy_kgDqeGASm3WUqbBPCh_kMt1DjaSzOWBL8"
+      - "https://www.youtube.com/watch?v=QUJJtse9kJw&list=OLAK5uy_nz2UlD8x6p3eqA0jzLKDFKv4SDY7lMZ0E"
+
+  - name: "Hichem Smati"
+    playlists:
+      - "https://www.youtube.com/watch?v=cQttJ4K3Gh8&list=RDEMNKWkOxx853oGyh9PU09W9A&start_radio=1"
+
+  - name: "Djalil Palermo"
+    playlists:
+      - "https://www.youtube.com/watch?v=R4R8kI2jcdE&list=RDEMmXPhH9LEhusJmLg86aLt1w&start_radio=1"
+
+  - name: "Bilal Babylo"
+    playlists:
+      - "https://www.youtube.com/watch?v=1WP61S7CE04&list=RDEM55_paAlpRrlEHbtrTCZLRA&start_radio=1"
+
+  - name: "Kader Japonais"
+    playlists:
+      - "https://www.youtube.com/watch?v=nrUMlicTdeI&list=RDEMwuA8BQlZway3zs4rvv8xrA&start_radio=1"
+
+  - name: "Cheb Adjel"
+    playlists:
+      - "https://www.youtube.com/watch?v=4Ig00HY8ErE&list=RDEMQaZAHYH8XJFn_6l7GLudxQ&start_radio=1"
+
+  - name: "Cheb Nasro"
+    playlists:
+      - "https://www.youtube.com/watch?v=qIE5jxk5ZRA&list=RDEMuVktt3iNmym4Yqi5G9EGAw&start_radio=1"
+  - name: "Amine La Colombe"
+    playlists:
+      - "https://www.youtube.com/watch?v=T1LzSKMN5hY&list=RDEMAv4XCPV7Z8WnvKkrXufvPg&start_radio=1"
+  - name: "Reda Taliani"
+    playlists:
+      - "https://www.youtube.com/watch?v=-L475c3_9vc&list=RDEMAdhjOBeCzCAXgP09tkvKXQ&start_radio=1"
 
